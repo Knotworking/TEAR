@@ -15,7 +15,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   testing:
-    name: Lint check and Testing
+#    name: Lint check and Testing
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -33,6 +33,6 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
 
-#      - name: Android Test Report
-#          uses: asadmansr/android-test-report-action@v1.2.0
-#          if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+      - name: Android Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
