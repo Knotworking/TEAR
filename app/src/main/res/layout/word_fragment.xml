@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="viewmodel"
+            type="com.knotworking.tear.WordViewModel" />
+    </data>
+
+<androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".WordFragment">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@{viewmodel.word}"
+        android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Word"
+        android:onClick="@{() -> viewmodel.requestNewWord()}"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
