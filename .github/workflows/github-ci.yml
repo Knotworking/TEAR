@@ -31,9 +31,7 @@ jobs:
           java-version: 1.8
 
       - name: Run Unit Tests
-        run: |
-          ./gradlew testDebugUnitTest
-          :domain:testDebugUnitTest
+        run: ./gradlew testDebugUnitTest
 
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
