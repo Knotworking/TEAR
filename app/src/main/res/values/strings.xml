@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TEAR</string>
+    <string name="newWord">New Word</string>
 </resources>
