@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.knotworking.tear.databinding.WordFragmentBinding
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.koin.android.viewmodel.ext.android.viewModel
 
-@ObsoleteCoroutinesApi
 class WordFragment : Fragment() {
 
     private val wordViewModel: WordViewModel by viewModel()
@@ -21,6 +19,7 @@ class WordFragment : Fragment() {
     ): View {
         wordFragmentBinding = WordFragmentBinding.inflate(inflater).apply {
             viewmodel = wordViewModel
+            state = wordViewModel.wordViewState.value
         }
         // Set the lifecycle owner to the lifecycle of the view
         wordFragmentBinding.lifecycleOwner = this.viewLifecycleOwner

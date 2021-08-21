@@ -1,43 +1,47 @@
 package com.knotworking.tear
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.knotworking.domain.usecase.Error
 import com.knotworking.domain.usecase.GetRandomWordUseCase
-import com.knotworking.domain.usecase.None
-import com.knotworking.domain.usecase.Result
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.*
 
-@ObsoleteCoroutinesApi
-class WordViewModel(private val getRandomWordUseCase: GetRandomWordUseCase) : BaseViewModel() {
-    override val receiveChannel: ReceiveChannel<Result<Any, Error>>
-        get() = getRandomWordUseCase.receiveChannel
+internal class WordViewModel(
+    private val getRandomWordUseCase: GetRandomWordUseCase
+) : BaseViewModel() {
 
-    private val _word = MutableLiveData<String>().apply { value = "" }
-    val word: LiveData<String> = _word
+    // TODO: how do the other projects do this
+//    val loading = MutableStateFlow(false)
+    val hasError = MutableStateFlow(false)
 
-    private val _dataLoading = MutableLiveData<Boolean>()
-    val dataLoading: LiveData<Boolean> = _dataLoading
+    val wordViewState: StateFlow<WordViewState>
+        get() = _wordViewState
+    private var _wordViewState = MutableStateFlow<WordViewState>(
+        WordViewState()
+    )
 
-    override fun resolve(value: Result<Any, Error>) {
-        value.handleResult(::handleSuccess, ::handleFailure, ::handleState)
+    override val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        // handle error
+//        _paywallViewState.value = _paywallViewState.value.copy(error = Error(message = R.string.__error)) // TODO: map error message
+        hasError.value = true
     }
 
     fun requestNewWord() {
-        getRandomWordUseCase(None())
+        launchInViewModelScope {
+            getRandomWordUseCase(Unit).onStart {
+                hasError.value = false
+                _wordViewState.value = WordViewState(loading = true)
+            }.catch {
+                hasError.value = true
+                _wordViewState.value = WordViewState(hasError = true)
+            }.onCompletion {
+            }.collect {
+                _wordViewState.value = WordViewState(word = it)
+            }
+        }
     }
 
-    fun handleSuccess(data: Any) {
-        val word = data as String
-        _word.postValue(word)
-    }
-
-    fun handleFailure(error: Error) {
-
-    }
-
-    fun handleState(state: Result.State) {
-        _dataLoading.postValue(state is Result.State.Loading)
-    }
+    data class WordViewState(
+        val hasError: Boolean = false,
+        val loading: Boolean = false,
+        val word: String? = null
+    )
 }
