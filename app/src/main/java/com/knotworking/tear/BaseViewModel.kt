@@ -1,38 +1,19 @@
 package com.knotworking.tear
 
 import androidx.lifecycle.ViewModel
-import com.knotworking.domain.usecase.Result
-import com.knotworking.domain.usecase.Error
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.consumeEach
-import kotlin.coroutines.CoroutineContext
-//@ObsoleteCoroutinesApi
-abstract class BaseViewModel : ViewModel(), CoroutineScope {
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-    private val job = Job()
-    protected abstract val receiveChannel: ReceiveChannel<Result<Any, Error>>
+abstract class BaseViewModel : ViewModel() {
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+    abstract val coroutineExceptionHandler: CoroutineExceptionHandler
 
-    abstract fun resolve(value: Result<Any, Error>)
-
-    init {
-        processStream()
-    }
-
-    private fun processStream() {
-        launch {
-            receiveChannel.consumeEach {
-                resolve(it)
-            }
+    protected fun launchInViewModelScope(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(coroutineExceptionHandler) {
+            block()
         }
-    }
-
-    override fun onCleared() {
-        receiveChannel.cancel()
-        coroutineContext.cancel()
-        super.onCleared()
     }
 }

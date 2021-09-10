@@ -1,8 +1,7 @@
 package com.knotworking.domain.repository
 
-import com.knotworking.domain.usecase.Error
-import com.knotworking.domain.usecase.Result
+import kotlinx.coroutines.flow.Flow
 
 interface WordRepository {
-    suspend fun getRandomWord(): Result<String, Error>
+    fun getRandomWord(): Flow<String>
 }

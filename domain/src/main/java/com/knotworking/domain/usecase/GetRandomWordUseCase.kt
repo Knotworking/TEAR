@@ -1,15 +1,10 @@
 package com.knotworking.domain.usecase
 
 import com.knotworking.domain.repository.WordRepository
+import kotlinx.coroutines.flow.Flow
 
-class GetRandomWordUseCase(private val wordRepository: WordRepository) : BaseUseCase<None>() {
-    override suspend fun run(params: None) {
-        // Started loading
-        resultChannel.send(Result.State.Loading)
+typealias GetRandomWordBaseUseCase = BaseUseCase<Unit, Flow<String>>
 
-        // Get word and send it, synchronous
-        resultChannel.send(wordRepository.getRandomWord())
-
-        resultChannel.send(Result.State.Loaded)
-    }
+class GetRandomWordUseCase(private val wordRepository: WordRepository) : GetRandomWordBaseUseCase {
+    override suspend fun invoke(params: Unit): Flow<String> = wordRepository.getRandomWord()
 }
