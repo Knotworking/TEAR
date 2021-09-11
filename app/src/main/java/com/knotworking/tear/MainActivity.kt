@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -16,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.knotworking.tear.ui.theme.TEARTheme
@@ -29,10 +32,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            requestForegroundPermissions()
-        }
 
         setContent {
             TEARTheme {
@@ -80,6 +79,21 @@ class MainActivity : AppCompatActivity() {
 @Composable
 internal fun LocationContent(viewModel: LocationViewModel) {
     val locationViewState by viewModel.locationViewState.collectAsState()
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission Accepted: Do something
+            Log.d("ExampleScreen", "PERMISSION GRANTED")
+            viewModel.startLocationUpdates()
+        } else {
+            // Permission Denied: Do something
+            Log.d("ExampleScreen", "PERMISSION DENIED")
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -88,8 +102,21 @@ internal fun LocationContent(viewModel: LocationViewModel) {
         Text(text = locationViewState.latitude?.toString() ?: "")
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
+            //TODO how to refactor this into a separate method
             Log.i("TAG", "start button")
-            viewModel.startLocationUpdates()
+
+            when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                true -> {
+                    // Some works that require permission
+                    Log.d("ExampleScreen","Code requires permission")
+                    viewModel.startLocationUpdates()
+                }
+                else -> {
+                    // Asking for permission
+                    Log.d("TAG", "Ask for permission")
+                    launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            }
         }) {
             if (locationViewState.loading) {
                 CircularProgressIndicator(color = Color.White)
@@ -98,4 +125,6 @@ internal fun LocationContent(viewModel: LocationViewModel) {
             }
         }
     }
+
+
 }
