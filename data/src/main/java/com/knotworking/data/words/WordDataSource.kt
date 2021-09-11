@@ -1,4 +1,4 @@
-package com.knotworking.data
+package com.knotworking.data.words
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -1,4 +1,4 @@
-package com.knotworking.data
+package com.knotworking.data.words
 
 import com.knotworking.domain.repository.WordRepository
 import kotlinx.coroutines.flow.Flow
