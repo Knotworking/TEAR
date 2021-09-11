@@ -1,7 +1,6 @@
-package com.knotworking.domain.usecase
+package com.knotworking.domain.location
 
-import com.knotworking.domain.location.Location
-import com.knotworking.domain.location.LocationRepository
+import com.knotworking.domain.BaseUseCase
 import kotlinx.coroutines.flow.Flow
 
 typealias GetLocationBaseUseCase = BaseUseCase<Unit, Flow<Location>>

@@ -1,6 +1,7 @@
-package com.knotworking.tear
+package com.knotworking.tear.example
 
-import com.knotworking.domain.usecase.GetRandomWordUseCase
+import com.knotworking.domain.example.GetRandomWordUseCase
+import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 

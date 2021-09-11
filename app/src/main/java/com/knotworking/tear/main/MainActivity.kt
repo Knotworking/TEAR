@@ -1,4 +1,4 @@
-package com.knotworking.tear
+package com.knotworking.tear.main
 
 import android.Manifest
 import android.content.pm.PackageManager

@@ -1,6 +1,7 @@
-package com.knotworking.tear
+package com.knotworking.tear.main
 
-import com.knotworking.domain.usecase.GetLocationUseCase
+import com.knotworking.domain.location.GetLocationUseCase
+import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 

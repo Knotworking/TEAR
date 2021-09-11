@@ -1,4 +1,4 @@
-package com.knotworking.tear
+package com.knotworking.tear.example
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
