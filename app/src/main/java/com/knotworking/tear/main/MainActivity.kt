@@ -1,9 +1,11 @@
 package com.knotworking.tear.main
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,6 +81,23 @@ class MainActivity : AppCompatActivity() {
 @Composable
 internal fun LocationContent(viewModel: LocationViewModel) {
     val locationViewState by viewModel.locationViewState.collectAsState()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "${locationViewState.latitude?.toString()?.plus(", ") ?: ""}${locationViewState.longitude?.toString() ?: ""}")
+        Spacer(modifier = Modifier.height(8.dp))
+        LocationButton(viewModel = viewModel, locationViewState = locationViewState)
+    }
+}
+
+@Composable
+internal fun LocationButton(
+    viewModel: LocationViewModel,
+    locationViewState: LocationViewModel.LocationViewState
+) {
     val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
@@ -86,45 +105,50 @@ internal fun LocationContent(viewModel: LocationViewModel) {
     ) { isGranted: Boolean ->
         if (isGranted) {
             // Permission Accepted: Do something
-            Log.d("ExampleScreen", "PERMISSION GRANTED")
+            Log.d("TAG", "PERMISSION GRANTED")
             viewModel.startLocationUpdates()
         } else {
             // Permission Denied: Do something
-            Log.d("ExampleScreen", "PERMISSION DENIED")
+            Log.d("TAG", "PERMISSION DENIED")
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = locationViewState.latitude?.toString() ?: "")
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-            //TODO how to refactor this into a separate method
-            Log.i("TAG", "start button")
-
-            when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                true -> {
-                    // Some works that require permission
-                    Log.d("ExampleScreen","Code requires permission")
-                    viewModel.startLocationUpdates()
-                }
-                else -> {
-                    // Asking for permission
-                    Log.d("TAG", "Ask for permission")
-                    launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                }
-            }
-        }) {
-            if (locationViewState.loading) {
+    Button(onClick = {
+        if (locationViewState.receivingUpdates) {
+            viewModel.stopLocationUpdates()
+        } else {
+            startLocationUpdates(context, viewModel, launcher)
+        }
+    }) {
+        when {
+            locationViewState.loading -> {
                 CircularProgressIndicator(color = Color.White)
-            } else {
+            }
+            locationViewState.receivingUpdates -> {
+                Text(text = "stop")
+            }
+            else -> {
                 Text(text = "start")
             }
         }
     }
+}
 
-
+private fun startLocationUpdates(
+    context: Context,
+    viewModel: LocationViewModel,
+    launcher: ManagedActivityResultLauncher<String, Boolean>
+) {
+    when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+        true -> {
+            // Some works that require permission
+            Log.d("TAG", "Code requires permission")
+            viewModel.startLocationUpdates()
+        }
+        else -> {
+            // Asking for permission
+            Log.d("TAG", "Ask for permission")
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
 }
