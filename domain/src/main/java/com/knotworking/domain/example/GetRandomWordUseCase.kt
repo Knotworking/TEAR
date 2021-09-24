@@ -1,6 +1,6 @@
-package com.knotworking.domain.usecase
+package com.knotworking.domain.example
 
-import com.knotworking.domain.repository.WordRepository
+import com.knotworking.domain.BaseUseCase
 import kotlinx.coroutines.flow.Flow
 
 typealias GetRandomWordBaseUseCase = BaseUseCase<Unit, Flow<String>>

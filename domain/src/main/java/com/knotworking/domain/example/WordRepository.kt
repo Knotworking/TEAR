@@ -1,4 +1,4 @@
-package com.knotworking.domain.repository
+package com.knotworking.domain.example
 
 import kotlinx.coroutines.flow.Flow
 

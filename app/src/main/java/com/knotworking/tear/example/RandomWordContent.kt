@@ -1,4 +1,4 @@
-package com.knotworking.tear
+package com.knotworking.tear.example
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.knotworking.tear.R
 
 @Composable
 internal fun RandomWordContent(viewModel: WordViewModel) {
