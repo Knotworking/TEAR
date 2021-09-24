@@ -1,4 +1,4 @@
-package com.knotworking.domain
+package com.knotworking.tear
 
 import org.junit.Test
 
@@ -11,7 +11,7 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun domain_addition_isCorrect() {
+    fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
 }
