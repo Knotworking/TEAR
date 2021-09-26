@@ -102,12 +102,13 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 }
 
-//afterEvaluate {
-//    rootProject.getSubprojects().findAll {
-//        it.name.contains('domain')
-//    }.each { subModule ->
-//        subModule.afterEvaluate {
-//            testDebugUnitTest.dependsOn it.tasks.named('test').get()
-//        }
-//    }
-//}
+// comment this out to run tests locally
+afterEvaluate {
+    rootProject.getSubprojects().findAll {
+        it.name.contains('domain')
+    }.each { subModule ->
+        subModule.afterEvaluate {
+            testDebugUnitTest.dependsOn it.tasks.named('test').get()
+        }
+    }
+}
