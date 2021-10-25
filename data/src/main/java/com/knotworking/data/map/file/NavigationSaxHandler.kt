@@ -1,4 +1,4 @@
-package com.knotworking.data.map
+package com.knotworking.data.map.file
 
 import android.util.Log
 import org.xml.sax.Attributes
@@ -20,6 +20,9 @@ class NavigationSaxHandler : DefaultHandler() {
     private var inCoordinatesTag = false
     private var buffer: StringBuffer? = null
     private var navigationDataSet = NavigationDataSet()
+
+    //TODO clean up
+    private var routeBuffer: StringBuffer? = null
 
     // ===========================================================
     // Getter & Setter
@@ -68,6 +71,7 @@ class NavigationSaxHandler : DefaultHandler() {
             inPointTag = true
         } else if (localName == "coordinates") {
             buffer = StringBuffer()
+            routeBuffer = StringBuffer()
             inCoordinatesTag = true
         }
     }
@@ -118,6 +122,15 @@ class NavigationSaxHandler : DefaultHandler() {
 //            navigationDataSet.getCurrentPlacemark()!!.coordinates = String(ch!!, start, length)
             navigationDataSet.getCurrentPlacemark()!!.coordinates =
                 buffer.toString().trim { it <= ' ' }
+        } else if (inLineStringTag && inCoordinatesTag) {
+//            if (navigationDataSet.getCurrentPlacemark() == null) navigationDataSet.setCurrentPlacemark(
+//                Placemark()
+//            )
+            routeBuffer!!.append(ch, start, length)
+
+//            navigationDataSet.getCurrentPlacemark()!!.coordinates = String(ch!!, start, length)
+            val raw = routeBuffer.toString().trim { it <= ' ' }
+            navigationDataSet.routeData = arrayListOf(raw)
         }
     }
 }
