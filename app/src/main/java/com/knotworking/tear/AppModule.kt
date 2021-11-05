@@ -1,8 +1,8 @@
 package com.knotworking.tear
 
+import com.knotworking.data.db.TearDatabaseProvider
 import com.knotworking.data.location.LocationRepositoryImpl
 import com.knotworking.data.location.SharedLocationManager
-import com.knotworking.data.map.InMemoryMapDataSource
 import com.knotworking.data.map.LocalMapDataSource
 import com.knotworking.data.map.MapDataSource
 import com.knotworking.data.map.MapRepositoryImpl
@@ -10,9 +10,9 @@ import com.knotworking.data.words.LocalWordDataSource
 import com.knotworking.data.words.WordDataSource
 import com.knotworking.data.words.WordRepositoryImpl
 import com.knotworking.domain.example.GetRandomWordUseCase
-import com.knotworking.domain.location.LocationRepository
 import com.knotworking.domain.example.WordRepository
 import com.knotworking.domain.location.GetLocationUseCase
+import com.knotworking.domain.location.LocationRepository
 import com.knotworking.domain.map.LoadMapUseCase
 import com.knotworking.domain.map.MapRepository
 import com.knotworking.tear.example.WordViewModel
@@ -40,6 +40,10 @@ val domainModule = module {
     single { LoadMapUseCase(mapRepository = get()) }
 }
 
+val baseDataModule = module {
+    single { TearDatabaseProvider.buildDatabase(get()) }
+}
+
 val exampleDataModule = module {
     single<WordDataSource> { LocalWordDataSource() }
 }
@@ -49,6 +53,11 @@ val locationDataModule = module {
 }
 
 val mapDataModule = module {
-    //single<MapDataSource> { LocalMapDataSource(context = androidContext()) }
-    single<MapDataSource> { InMemoryMapDataSource() }
+
+//    fun provideKmMarkerDao(database: TearDatabase): KmMarkerDao {
+//        return database.kmMarkerDao()
+//    }
+
+    single<MapDataSource> { LocalMapDataSource(database = get()) }
+//    single<MapDataSource> { InMemoryMapDataSource() }
 }

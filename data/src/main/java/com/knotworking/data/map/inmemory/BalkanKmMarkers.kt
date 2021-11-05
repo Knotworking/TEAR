@@ -1,9 +1,7 @@
 package com.knotworking.data.map.inmemory
 
-import com.knotworking.data.map.Location
-
 object BalkanKmMarkers {
-    val markerLocations: List<Location> = listOf(
+    /*val markerLocations: List<Location> = listOf(
         Location(27.899409, 42.704819),
         Location(27.893293661, 42.710019387),
         Location(27.884982483, 42.715500429),
@@ -1119,7 +1117,7 @@ object BalkanKmMarkers {
         "23.077943789,43.169511575,0",
         "23.070130055,43.17351476,0",
         "23.058884435,43.173889823,0"
-    )
+    )*/
 
     // Too large
     /*val routeLocations: List<Location> = listOf(
