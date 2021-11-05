@@ -8,6 +8,6 @@ import androidx.room.PrimaryKey
 data class KmMarker(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "km") val km: Int,
-    @ColumnInfo(name = "longitude") val longitude: Double,
-    @ColumnInfo(name = "latitude") val latitude: Double
+    @ColumnInfo(name = "latitude") val latitude: Double,
+    @ColumnInfo(name = "longitude") val longitude: Double
 )
