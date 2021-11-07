@@ -2,7 +2,7 @@ package com.knotworking.tear
 
 import com.knotworking.data.location.LocationRepositoryImpl
 import com.knotworking.data.location.SharedLocationManager
-import com.knotworking.data.map.InMemoryMapDataSource
+//import com.knotworking.data.map.InMemoryMapDataSource
 import com.knotworking.data.map.LocalMapDataSource
 import com.knotworking.data.map.MapDataSource
 import com.knotworking.data.map.MapRepositoryImpl
@@ -49,6 +49,6 @@ val locationDataModule = module {
 }
 
 val mapDataModule = module {
-    //single<MapDataSource> { LocalMapDataSource(context = androidContext()) }
-    single<MapDataSource> { InMemoryMapDataSource() }
+    single<MapDataSource> { LocalMapDataSource(context = androidContext()) }
+//    single<MapDataSource> { InMemoryMapDataSource() }
 }

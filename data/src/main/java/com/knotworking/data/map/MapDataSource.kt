@@ -5,7 +5,6 @@ import android.util.Log
 import com.knotworking.data.R
 import com.knotworking.data.map.file.NavigationDataSet
 import com.knotworking.data.map.file.NavigationSaxHandler
-import com.knotworking.data.map.inmemory.BalkanKmMarkers
 import org.xml.sax.InputSource
 import org.xml.sax.XMLReader
 import java.io.InputStream
@@ -16,16 +15,16 @@ interface MapDataSource {
     suspend fun parseMapData()
 }
 
-class InMemoryMapDataSource() : MapDataSource {
-    override suspend fun parseMapData() {
-        val start = System.currentTimeMillis()
-        val data = BalkanKmMarkers.markerLocations
-        Log.i("TAG", "data: ${data.size}")
-        val timeTaken = System.currentTimeMillis() - start
-        println("ms taken = $timeTaken")
-    }
+//class InMemoryMapDataSource() : MapDataSource {
+//    override suspend fun parseMapData() {
+//        val start = System.currentTimeMillis()
+//        val data = BalkanKmMarkers.markerLocations
+//        Log.i("TAG", "data: ${data.size}")
+//        val timeTaken = System.currentTimeMillis() - start
+//        println("ms taken = $timeTaken")
+//    }
 
-}
+//}
 
 class LocalMapDataSource(private val context: Context) : MapDataSource {
     override suspend fun parseMapData() {
@@ -35,12 +34,18 @@ class LocalMapDataSource(private val context: Context) : MapDataSource {
             Log.i("TAG", "nav data: ${navData.getPlacemarks().size}")
             val timeTaken = System.currentTimeMillis() - start
             println("ms taken = $timeTaken")
-            val routeCoords = navData.routeData.first().split("\n")
 
+            navData.getPlacemarks().forEachIndexed { index, placemark ->
 
-            routeCoords.forEach {
-                println("Location(${it.split(",").take(2).joinToString(",")}),")
+                println("(${index + 5227}, ${placemark?.coordinates?.split(",")?.take(2)?.joinToString(",")}),")
             }
+//            val routeCoords = navData.routeData.first().split("\n")
+
+
+            //TODO to find the route coordinates
+//            routeCoords.forEach {
+//                println("Location(${it.split(",").take(2).joinToString(",")}),")
+//            }
         } else {
             Log.i("TAG", "nav data is null")
         }
@@ -64,7 +69,7 @@ class LocalMapDataSource(private val context: Context) : MapDataSource {
 //                context.resources.openRawResource(R.raw.balkan_mountains_km_markers)
 
             val stream: InputStream =
-                context.resources.openRawResource(R.raw.balkan_mountains_main_route)
+                context.resources.openRawResource(R.raw.t7_1km_markers)
 
             xr.parse(InputSource(stream))
             /* Our NavigationSaxHandler now provides the parsed data to us. */
