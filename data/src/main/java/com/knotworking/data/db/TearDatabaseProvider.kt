@@ -8,5 +8,6 @@ object TearDatabaseProvider {
         context.applicationContext,
         TearDatabase::class.java,
         "tear_db"
-    ).build()
+    ).createFromAsset("tear_db.db")
+        .build()
 }
