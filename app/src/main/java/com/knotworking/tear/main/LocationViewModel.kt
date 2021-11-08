@@ -1,13 +1,15 @@
 package com.knotworking.tear.main
 
 import com.knotworking.domain.location.GetLocationUseCase
+import com.knotworking.domain.map.LoadMapUseCase
 import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 internal class LocationViewModel(
-    private val getLocationUseCase: GetLocationUseCase
+    private val getLocationUseCase: GetLocationUseCase,
+    private val loadMapUseCase: LoadMapUseCase
 ) : BaseViewModel() {
     val locationViewState: StateFlow<LocationViewState>
         get() = _locationViewState
@@ -23,6 +25,10 @@ internal class LocationViewModel(
     }
 
     fun startLocationUpdates() {
+        launchInViewModelScope {
+            loadMapUseCase.invoke(Unit)
+        }
+
         locationFlow = launchInViewModelScope {
             getLocationUseCase(Unit).onStart {
                 _locationViewState.value =

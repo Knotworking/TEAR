@@ -11,7 +11,14 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(presentationModule + domainModule + exampleDataModule + locationDataModule)
+            modules(
+                presentationModule +
+                        domainModule +
+                        baseDataModule +
+                        exampleDataModule +
+                        locationDataModule +
+                        mapDataModule
+            )
         }
     }
 }
