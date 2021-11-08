@@ -19,6 +19,6 @@ class LocationRepositoryImpl(
      * Observable flow for location updates
      */
     @ExperimentalCoroutinesApi
-    override fun getLocations() =
+    override fun getLocation() =
         sharedLocationManager.locationFlow().map { Location(it.latitude, it.longitude) }
 }

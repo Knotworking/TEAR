@@ -58,6 +58,5 @@ val mapDataModule = module {
 //        return database.kmMarkerDao()
 //    }
 
-    single<MapDataSource> { LocalMapDataSource(database = get()) }
-//    single<MapDataSource> { InMemoryMapDataSource() }
+    single<MapDataSource> { LocalMapDataSource(database = get(), sharedLocationManager = get()) }
 }

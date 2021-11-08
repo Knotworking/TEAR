@@ -1,5 +1,5 @@
 package com.knotworking.domain.map
 
 interface MapRepository {
-    suspend fun parseMapData()
+    suspend fun getClosestKmMarker() : Int
 }
