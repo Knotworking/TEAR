@@ -25,8 +25,12 @@ internal class LocationViewModel(
 
     fun startLocationUpdates() {
         locationFlow = launchInViewModelScope {
-            _locationViewState.value =
-                LocationViewState(receivingUpdates = true, loading = true)
+            _locationViewState.emit(
+                _locationViewState.value.copy(
+                    receivingUpdates = true,
+                    loading = true
+                )
+            )
             getLocationUseCase(Unit).onStart {
                 // Code only comes here after the first (and only) value is emitted
 //                Log.i("TAG","Fetching latest location")
@@ -42,7 +46,10 @@ internal class LocationViewModel(
                         receivingUpdates = false,
                         loading = false,
                         latitude = it.latitude,
-                        longitude = it.longitude
+                        longitude = it.longitude,
+                        kmProgress = it.kmProgress,
+                        percentageProgress = it.percentageProgress,
+                        distanceToTrail = it.metresToTrail
                     )
             }
         }
@@ -61,6 +68,9 @@ internal class LocationViewModel(
         val loading: Boolean = false,
         val receivingUpdates: Boolean = false,
         val latitude: Double? = null,
-        val longitude: Double? = null
+        val longitude: Double? = null,
+        val kmProgress: Double? = null,
+        val percentageProgress: Double? = null,
+        val distanceToTrail: Double? = null
     )
 }
