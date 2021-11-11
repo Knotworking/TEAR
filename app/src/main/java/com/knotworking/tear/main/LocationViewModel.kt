@@ -1,15 +1,14 @@
 package com.knotworking.tear.main
 
+import android.util.Log
 import com.knotworking.domain.location.GetLocationUseCase
-import com.knotworking.domain.map.LoadMapUseCase
 import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 internal class LocationViewModel(
-    private val getLocationUseCase: GetLocationUseCase,
-    private val loadMapUseCase: LoadMapUseCase
+    private val getLocationUseCase: GetLocationUseCase
 ) : BaseViewModel() {
     val locationViewState: StateFlow<LocationViewState>
         get() = _locationViewState
@@ -25,20 +24,23 @@ internal class LocationViewModel(
     }
 
     fun startLocationUpdates() {
-        launchInViewModelScope {
-            loadMapUseCase.invoke(Unit)
-        }
-
         locationFlow = launchInViewModelScope {
+            _locationViewState.value =
+                LocationViewState(receivingUpdates = true, loading = true)
             getLocationUseCase(Unit).onStart {
-                _locationViewState.value =
-                    LocationViewState(receivingUpdates = true, loading = true)
+                // Code only comes here after the first (and only) value is emitted
+//                Log.i("TAG","Fetching latest location")
+//                _locationViewState.value =
+//                    LocationViewState(receivingUpdates = true, loading = true)
             }.catch {
+                Log.e("TAG", "Error fetching trail location in viewmodel: ${it.message}")
                 _locationViewState.value = LocationViewState(hasError = true)
-            }.collect {
+            }.first { true }.also {
+                stopLocationUpdates()
                 _locationViewState.value =
                     LocationViewState(
-                        receivingUpdates = true,
+                        receivingUpdates = false,
+                        loading = false,
                         latitude = it.latitude,
                         longitude = it.longitude
                     )

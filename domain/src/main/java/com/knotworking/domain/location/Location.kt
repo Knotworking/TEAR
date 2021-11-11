@@ -1,3 +1,3 @@
 package com.knotworking.domain.location
 
-data class Location(val latitude: Double, val longitude: Double)
+open class Location(open val latitude: Double, open val longitude: Double)

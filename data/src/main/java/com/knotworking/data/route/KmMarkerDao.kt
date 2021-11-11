@@ -1,4 +1,4 @@
-package com.knotworking.data.map
+package com.knotworking.data.route
 
 import androidx.room.Dao
 import androidx.room.Delete
