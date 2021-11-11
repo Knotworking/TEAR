@@ -10,12 +10,15 @@ import android.location.Location as AndroidLocation
 interface RouteDataSource {
     suspend fun getClosestKmMarker(location: Location): KmMarker?
     suspend fun getTrailLocation(location: Location): TrailLocation
+    val totalKm: Int
 }
 
 // TODO can I just inject the relevant DAO?
 class LocalRouteDataSource(
     private val database: TearDatabase
 ) : RouteDataSource {
+
+    override val totalKm = 6254
 
     override suspend fun getClosestKmMarker(location: Location): KmMarker? {
         val startTime = System.currentTimeMillis()
@@ -29,7 +32,7 @@ class LocalRouteDataSource(
         val kmMarker = getClosestKmMarker(location)
         val kmProgress = kmMarker?.km?.toDouble()
         val percentage = if (kmProgress != null) {
-            (kmProgress / 6253) * 100
+            (kmProgress / totalKm) * 100
         } else {
             0.0
         }
@@ -42,16 +45,11 @@ class LocalRouteDataSource(
         )
     }
 
+    // This only takes 100-300ms, so no need to implement a more sophisticated search algorithm
     @ExperimentalCoroutinesApi
     private suspend fun getClosestKmMarkerBruteForce(location: Location): KmMarker? {
         val allMarkers = database.kmMarkerDao().getAll()
-        // Log.i("TAG", "loadMapData: ${allMarkers.size}")
-
-        val marker = allMarkers.minByOrNull { distanceToKmMarker(location, it) }
-        marker?.let {
-            Log.i("TAG", "distance to marker: ${distanceToKmMarker(location, it)}m")
-        }
-        return marker
+        return allMarkers.minByOrNull { distanceToKmMarker(location, it) }
     }
 
     private fun distanceToKmMarker(
