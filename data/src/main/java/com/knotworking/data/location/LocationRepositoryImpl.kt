@@ -29,7 +29,6 @@ class LocationRepositoryImpl(
         val location = sharedLocationManager.locationFlow().first()
 //        delay(1000L)
         return flow { emit(routeDataSource.getTrailLocation(Location(location.latitude, location.longitude))) }
-//        sharedLocationManager.locationFlow().map { Location(it.latitude, it.longitude) }
     }
 
 }
