@@ -1,4 +1,4 @@
-package com.knotworking.data.map
+package com.knotworking.data.route
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

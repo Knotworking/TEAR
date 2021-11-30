@@ -87,8 +87,11 @@ internal fun LocationContent(viewModel: LocationViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "${locationViewState.latitude?.toString()?.plus(", ") ?: ""}${locationViewState.longitude?.toString() ?: ""}")
-        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "${locationViewState.kmProgress?.toInt()}km")
+        Text("${String.format("%.2f", locationViewState.percentageProgress)}%")
+        Text("${String.format("%.2f", locationViewState.distanceToTrail?.div(1000))}km to trail")
+        Text(text = "${locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""}${"${locationViewState.longitude?.toString()} lon" ?: ""}")
+        Spacer(modifier = Modifier.height(16.dp))
         LocationButton(viewModel = viewModel, locationViewState = locationViewState)
     }
 }
