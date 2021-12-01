@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
-internal class LocationViewModel(
+class LocationViewModel(
     private val getLocationUseCase: GetLocationUseCase
 ) : BaseViewModel() {
     val locationViewState: StateFlow<LocationViewState>

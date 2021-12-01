@@ -3,7 +3,7 @@ package com.knotworking.tear.example
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RandomWordActivity : AppCompatActivity() {
 

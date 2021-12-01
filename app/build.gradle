@@ -8,13 +8,13 @@ plugins {
 apply from: "../dependencies.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.knotworking.tear"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -51,20 +51,17 @@ dependencies {
     implementation project(':domain')
     implementation project(':data')
 
+    implementation koinCore
     implementation koinAndroid
-    implementation koinAndroidScope
-    implementation koinAndroidViewModel
+    implementation koinAndroidCompose
     implementation coroutinesCore
     implementation coroutinesAndroid
-//    implementation navigationFragment
-//    implementation navigationUi
+    implementation navigationCompose
     implementation retrofit
     implementation loggingInterceptor
     implementation gson
     implementation gsonConverter
     implementation lifecycleExtensions
-//    implementation glide
-//    implementation paging
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'
