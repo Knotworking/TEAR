@@ -1,4 +1,4 @@
-package com.knotworking.tear.main
+package com.knotworking.tear.nav
 
 sealed class Screen(val route: String) {
     object MainScreen : Screen("main_screen")

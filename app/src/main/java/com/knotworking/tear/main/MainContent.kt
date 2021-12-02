@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.knotworking.tear.nav.Screen
 
 @Composable
 internal fun LocationContent(navController: NavController, viewModel: LocationViewModel) {
