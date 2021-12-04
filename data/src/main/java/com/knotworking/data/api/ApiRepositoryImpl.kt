@@ -1,6 +1,7 @@
 package com.knotworking.data.api
 
 import android.util.Log
+import com.knotworking.data.BuildConfig
 import com.knotworking.data.api.models.AuthRequest
 import com.knotworking.domain.api.ApiRepository
 import com.knotworking.domain.location.Location
@@ -12,8 +13,8 @@ class ApiRepositoryImpl(
     override suspend fun getNewToken(): Boolean {
         val response = wordpressApi.getNewToken(
             body = AuthRequest(
-                username = username,
-                password = password
+                username = BuildConfig.WORDPRESS_USERNAME,
+                password = BuildConfig.WORDPRESS_PASSWORD
             )
         )
 

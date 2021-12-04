@@ -69,6 +69,3 @@ lint/reports/
 
 # Android Profiling
 *.hprof
-
-# Do not commit login credentials
-data/src/main/java/com/knotworking/data/api/PrivateCredentials.kt
