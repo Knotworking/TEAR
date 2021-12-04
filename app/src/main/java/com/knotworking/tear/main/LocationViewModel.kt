@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
-internal class LocationViewModel(
+class LocationViewModel(
     private val getLocationUseCase: GetLocationUseCase
 ) : BaseViewModel() {
     val locationViewState: StateFlow<LocationViewState>
@@ -39,7 +39,7 @@ internal class LocationViewModel(
             }.catch {
                 Log.e("TAG", "Error fetching trail location in viewmodel: ${it.message}")
                 _locationViewState.value = LocationViewState(hasError = true)
-            }.first { true }.also {
+            }.first().also {
                 stopLocationUpdates()
                 _locationViewState.value =
                     LocationViewState(

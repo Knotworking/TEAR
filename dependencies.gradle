@@ -1,14 +1,11 @@
 ext {
     def retrofitVersion = "2.6.2"
     def gsonVersion = "2.8.5"
-    def koinVersion = "2.0.1"
+    def koinVersion = "3.1.4"
     def loggingVersion = "3.14.0"
     def gsonConverterVersion = "2.1.0"
-    def glideVersion = "4.10.0"
-    def navVersion = "2.1.0"
     def coroutinesVersion = "1.5.0"
     def lifecycleExtensionsVersion = "2.1.0"
-    def paging_version = "1.0.1"
 
     // testing
     def mockkVersion = '1.12.0'
@@ -20,17 +17,12 @@ ext {
 
     loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:$loggingVersion"
 
-    koinAndroid = "org.koin:koin-android:$koinVersion"
-    koinAndroidScope = "org.koin:koin-android-scope:$koinVersion"
-    koinAndroidViewModel = "org.koin:koin-android-viewmodel:$koinVersion"
+    koinCore = "io.insert-koin:koin-core:$koinVersion"
+    koinAndroid = "io.insert-koin:koin-android:$koinVersion"
+    koinAndroidCompose = "io.insert-koin:koin-androidx-compose:$koinVersion"
 
-//    glide = "com.github.bumptech.glide:glide:$glideVersion"
-
-//    navigationFragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
-//    navigationUi = "androidx.navigation:navigation-ui-ktx:$navVersion"
+    navigationCompose = "androidx.navigation:navigation-compose:2.4.0-beta02"
     lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:l$lifecycleExtensionsVersion"
-
-//    paging = "android.arch.paging:runtime:$paging_version"
 
     coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
