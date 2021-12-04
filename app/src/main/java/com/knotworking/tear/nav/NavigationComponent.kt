@@ -6,12 +6,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.knotworking.tear.main.LocationContent
 import com.knotworking.tear.main.LocationViewModel
-import com.knotworking.tear.main.SettingsContent
+import com.knotworking.tear.settings.SettingsContent
+import com.knotworking.tear.settings.SettingsViewModel
 import org.koin.androidx.compose.viewModel
 
 @Composable
 fun NavigationComponent() {
     val locationViewModel: LocationViewModel by viewModel()
+    val settingsViewModel: SettingsViewModel by viewModel()
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
@@ -19,7 +21,7 @@ fun NavigationComponent() {
             LocationContent(navController = navController, viewModel = locationViewModel)
         }
         composable(route = Screen.SettingsScreen.route) {
-            SettingsContent()
+            SettingsContent(viewModel = settingsViewModel)
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.knotworking.tear
 
 import android.app.Application
+import com.knotworking.data.*
+import com.knotworking.domain.domainModule
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -17,7 +19,8 @@ class App : Application() {
                         baseDataModule +
                         exampleDataModule +
                         locationDataModule +
-                        mapDataModule
+                        routeDataModule +
+                        wordpressApiModule
             )
         }
     }

@@ -57,10 +57,7 @@ dependencies {
     implementation coroutinesCore
     implementation coroutinesAndroid
     implementation navigationCompose
-    implementation retrofit
-    implementation loggingInterceptor
-    implementation gson
-    implementation gsonConverter
+
     implementation lifecycleExtensions
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -83,7 +80,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core:1.0.1")
     implementation("androidx.compose.material:material-icons-extended:1.0.1")
 
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"

@@ -39,7 +39,7 @@ class LocationViewModel(
             }.catch {
                 Log.e("TAG", "Error fetching trail location in viewmodel: ${it.message}")
                 _locationViewState.value = LocationViewState(hasError = true)
-            }.first { true }.also {
+            }.first().also {
                 stopLocationUpdates()
                 _locationViewState.value =
                     LocationViewState(
