@@ -90,10 +90,10 @@ internal fun LocationButton(
                 CircularProgressIndicator(color = Color.White)
             }
             locationViewState.receivingUpdates -> {
-                Text(text = "stop")
+                Text(text = "Stop")
             }
             else -> {
-                Text(text = "start")
+                Text(text = "Update Location")
             }
         }
     }
@@ -107,12 +107,10 @@ private fun startLocationUpdates(
     when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
         true -> {
             // Some work that requires permission
-            Log.d("TAG", "Code requires permission")
             viewModel.startLocationUpdates()
         }
         else -> {
             // Asking for permission
-            Log.d("TAG", "Ask for permission")
             launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }

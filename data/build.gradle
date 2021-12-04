@@ -21,13 +21,13 @@ android {
                 "String",
                 "WORDPRESS_USERNAME",
                 project.properties['TEAR_API_USERNAME'] /* ~/.gradle/gradle.properties */
-                        ?: ""
+                        ?: "\"\""
         )
         buildConfigField(
                 "String",
                 "WORDPRESS_PASSWORD",
                 project.properties['TEAR_API_PASSWORD'] /* ~/.gradle/gradle.properties */
-                        ?: ""
+                        ?: "\"\""
         )
 
     }
