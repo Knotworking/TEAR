@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,38 +25,70 @@ import com.knotworking.tear.nav.Screen
 @Composable
 internal fun LocationContent(navController: NavController, viewModel: LocationViewModel) {
     val locationViewState by viewModel.locationViewState.collectAsState()
-    Box(modifier = Modifier.fillMaxSize()) {
-        IconButton(
-            onClick = { navController.navigate(Screen.SettingsScreen.route) },
-            modifier = Modifier.align(Alignment.TopEnd)
-        ) {
-            Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
-        }
+    val scaffoldState = rememberScaffoldState()
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "${locationViewState.kmProgress?.toInt()}km")
-            Text("${String.format("%.2f", locationViewState.percentageProgress)}%")
-            Text(
-                "${
-                    String.format(
-                        "%.2f",
-                        locationViewState.distanceToTrail?.div(1000)
-                    )
-                }km to trail"
+    Snackbar(
+        viewModel = viewModel,
+        locationViewState = locationViewState,
+        scaffoldState = scaffoldState
+    )
+    Scaffold(scaffoldState = scaffoldState) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            IconButton(
+                onClick = { navController.navigate(Screen.SettingsScreen.route) },
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "${locationViewState.kmProgress?.toInt()}km")
+                Text("${String.format("%.2f", locationViewState.percentageProgress)}%")
+                Text(
+                    "${
+                        String.format(
+                            "%.2f",
+                            locationViewState.distanceToTrail?.div(1000)
+                        )
+                    }km to trail"
+                )
+                Text(
+                    text = "${
+                        locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
+                    }${"${locationViewState.longitude?.toString()} lon" ?: ""}"
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
+                Spacer(modifier = Modifier.height(16.dp))
+                UpdateLocationButton(viewModel = viewModel, locationViewState = locationViewState)
+            }
+        }
+    }
+}
+
+@Composable
+internal fun Snackbar(
+    viewModel: LocationViewModel,
+    locationViewState: LocationViewModel.LocationViewState,
+    scaffoldState: ScaffoldState
+) {
+    LaunchedEffect(locationViewState) {
+        if (locationViewState.snackbarText != null) {
+            val result = scaffoldState.snackbarHostState.showSnackbar(
+                message = locationViewState.snackbarText,
             )
-            Text(
-                text = "${
-                    locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
-                }${"${locationViewState.longitude?.toString()} lon" ?: ""}"
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
-            Spacer(modifier = Modifier.height(16.dp))
-            UpdateLocationButton(viewModel = viewModel, locationViewState = locationViewState)
+            when (result) {
+                SnackbarResult.ActionPerformed -> {
+                    viewModel.hideSnackbar()
+                }
+                SnackbarResult.Dismissed -> {
+                    viewModel.hideSnackbar()
+                }
+            }
         }
     }
 }
@@ -124,7 +157,7 @@ internal fun UpdateLocationButton(
     locationViewState: LocationViewModel.LocationViewState
 ) {
     Button(enabled = locationViewState.latitude != null && locationViewState.longitude != null,
-        onClick = {viewModel.postLocation()}) {
+        onClick = { viewModel.postLocation() }) {
         Text(text = "Post Location")
     }
 }

@@ -71,14 +71,38 @@ class LocationViewModel(
             val location = Location(latitude = _locationViewState.value.latitude!!, _locationViewState.value.longitude!!)
             val success = postLocationUseCase.invoke(params = location)
             if (success) {
+                showSnackbar("Location successfully updated.")
                 Log.d("TAG", "location update successful")
+            } else {
+                showSnackbar("Unable to update location.")
             }
+        }
+    }
+
+    fun showSnackbar(message: String) {
+        launchInViewModelScope {
+            _locationViewState.emit(
+                _locationViewState.value.copy(
+                    snackbarText = message
+                )
+            )
+        }
+    }
+
+    fun hideSnackbar() {
+        launchInViewModelScope {
+            _locationViewState.emit(
+                _locationViewState.value.copy(
+                    snackbarText = null
+                )
+            )
         }
     }
 
     data class LocationViewState(
         val hasError: Boolean = false,
         val loading: Boolean = false,
+        val snackbarText: String? = null,
         val receivingUpdates: Boolean = false,
         val latitude: Double? = null,
         val longitude: Double? = null,
