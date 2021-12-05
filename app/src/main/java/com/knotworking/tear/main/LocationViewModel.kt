@@ -1,14 +1,17 @@
 package com.knotworking.tear.main
 
 import android.util.Log
+import com.knotworking.domain.api.PostLocationUseCase
 import com.knotworking.domain.location.GetLocationUseCase
+import com.knotworking.domain.location.Location
 import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 class LocationViewModel(
-    private val getLocationUseCase: GetLocationUseCase
+    private val getLocationUseCase: GetLocationUseCase,
+    private val postLocationUseCase: PostLocationUseCase
 ) : BaseViewModel() {
     val locationViewState: StateFlow<LocationViewState>
         get() = _locationViewState
@@ -23,7 +26,7 @@ class LocationViewModel(
         _locationViewState.value = _locationViewState.value.copy(hasError = true)
     }
 
-    fun startLocationUpdates() {
+    fun getLocation() {
         locationFlow = launchInViewModelScope {
             _locationViewState.emit(
                 _locationViewState.value.copy(
@@ -63,9 +66,43 @@ class LocationViewModel(
         }
     }
 
+    fun postLocation() {
+        launchInViewModelScope {
+            val location = Location(latitude = _locationViewState.value.latitude!!, _locationViewState.value.longitude!!)
+            val success = postLocationUseCase.invoke(params = location)
+            if (success) {
+                showSnackbar("Location successfully updated.")
+                Log.d("TAG", "location update successful")
+            } else {
+                showSnackbar("Unable to update location.")
+            }
+        }
+    }
+
+    fun showSnackbar(message: String) {
+        launchInViewModelScope {
+            _locationViewState.emit(
+                _locationViewState.value.copy(
+                    snackbarText = message
+                )
+            )
+        }
+    }
+
+    fun hideSnackbar() {
+        launchInViewModelScope {
+            _locationViewState.emit(
+                _locationViewState.value.copy(
+                    snackbarText = null
+                )
+            )
+        }
+    }
+
     data class LocationViewState(
         val hasError: Boolean = false,
         val loading: Boolean = false,
+        val snackbarText: String? = null,
         val receivingUpdates: Boolean = false,
         val latitude: Double? = null,
         val longitude: Double? = null,

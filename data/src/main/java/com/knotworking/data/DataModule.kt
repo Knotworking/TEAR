@@ -2,10 +2,7 @@ package com.knotworking.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.knotworking.data.api.ApiRepositoryImpl
-import com.knotworking.data.api.SharedPrefsTokenDataSource
-import com.knotworking.data.api.TokenDataSource
-import com.knotworking.data.api.WordpressApi
+import com.knotworking.data.api.*
 import com.knotworking.data.db.TearDatabaseProvider
 import com.knotworking.data.location.LocationRepositoryImpl
 import com.knotworking.data.location.SharedLocationManager
@@ -37,10 +34,9 @@ val baseDataModule = module {
 val wordpressApiModule = module {
     single { provideWordpressApi(retrofit = get()) }
     single { provideRetrofit(okHttpClient = get(), url = "https://benhikes.eu/wp-json/") }
-    single { provideOkHttpClient() }
-
     single<TokenDataSource> { SharedPrefsTokenDataSource(sharedPrefs = get()) }
-
+    single { AuthInterceptor(tokenDataSource = get()) }
+    single { provideOkHttpClient(authInterceptor = get()) }
     single<ApiRepository> { ApiRepositoryImpl(wordpressApi = get(), tokenDataSource = get()) }
 }
 
@@ -52,13 +48,14 @@ internal fun provideRetrofit(okHttpClient: OkHttpClient, url: String): Retrofit 
         .build()
 }
 
-internal fun provideOkHttpClient(): OkHttpClient {
+internal fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
     val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
     return OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
+        .addInterceptor(authInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .build()
 }
