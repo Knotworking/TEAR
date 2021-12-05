@@ -27,7 +27,7 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
     Box(modifier = Modifier.fillMaxSize()) {
         IconButton(
             onClick = { navController.navigate(Screen.SettingsScreen.route) },
-            modifier = Modifier.align (Alignment.TopEnd)
+            modifier = Modifier.align(Alignment.TopEnd)
         ) {
             Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
         }
@@ -53,13 +53,15 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
                 }${"${locationViewState.longitude?.toString()} lon" ?: ""}"
             )
             Spacer(modifier = Modifier.height(16.dp))
-            LocationButton(viewModel = viewModel, locationViewState = locationViewState)
+            GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
+            Spacer(modifier = Modifier.height(16.dp))
+            UpdateLocationButton(viewModel = viewModel, locationViewState = locationViewState)
         }
     }
 }
 
 @Composable
-internal fun LocationButton(
+internal fun GetLocationButton(
     viewModel: LocationViewModel,
     locationViewState: LocationViewModel.LocationViewState
 ) {
@@ -71,7 +73,7 @@ internal fun LocationButton(
         if (isGranted) {
             // Permission Accepted: Do something
             Log.d("TAG", "PERMISSION GRANTED")
-            viewModel.startLocationUpdates()
+            viewModel.getLocation()
         } else {
             // Permission Denied: Do something
             Log.d("TAG", "PERMISSION DENIED")
@@ -82,7 +84,7 @@ internal fun LocationButton(
         if (locationViewState.receivingUpdates) {
             viewModel.stopLocationUpdates()
         } else {
-            startLocationUpdates(context, viewModel, launcher)
+            getLocation(context, viewModel, launcher)
         }
     }) {
         when {
@@ -93,13 +95,13 @@ internal fun LocationButton(
                 Text(text = "Stop")
             }
             else -> {
-                Text(text = "Update Location")
+                Text(text = "Get Location")
             }
         }
     }
 }
 
-private fun startLocationUpdates(
+private fun getLocation(
     context: Context,
     viewModel: LocationViewModel,
     launcher: ManagedActivityResultLauncher<String, Boolean>
@@ -107,11 +109,22 @@ private fun startLocationUpdates(
     when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
         true -> {
             // Some work that requires permission
-            viewModel.startLocationUpdates()
+            viewModel.getLocation()
         }
         else -> {
             // Asking for permission
             launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+}
+
+@Composable
+internal fun UpdateLocationButton(
+    viewModel: LocationViewModel,
+    locationViewState: LocationViewModel.LocationViewState
+) {
+    Button(enabled = locationViewState.latitude != null && locationViewState.longitude != null,
+        onClick = {viewModel.postLocation()}) {
+        Text(text = "Post Location")
     }
 }

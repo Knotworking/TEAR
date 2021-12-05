@@ -19,14 +19,16 @@ class ApiRepositoryImpl(
         )
 
         if (response.isSuccessful) {
-            Log.v("TAG", "token retrieved: ${response.body()!!.token}")
             tokenDataSource.setToken(response.body()!!.token)
         }
 
         return response.isSuccessful
     }
 
-    override suspend fun setCurrentLocation(location: Location) {
-        TODO("not implemented")
+    override suspend fun setCurrentLocation(location: Location): Boolean {
+        // In the future send a request object rather than an array
+        val array = arrayOf(location.longitude, location.latitude)
+        val response = wordpressApi.setCurrentLocation(body = array)
+        return response.isSuccessful
     }
 }

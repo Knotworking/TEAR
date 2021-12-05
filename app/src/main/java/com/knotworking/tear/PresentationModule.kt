@@ -10,6 +10,11 @@ import org.koin.dsl.module
 @ObsoleteCoroutinesApi
 val presentationModule = module {
     viewModel { WordViewModel(getRandomWordUseCase = get()) }
-    viewModel { LocationViewModel(getLocationUseCase = get()) }
+    viewModel {
+        LocationViewModel(
+            getLocationUseCase = get(),
+            postLocationUseCase = get()
+        )
+    }
     viewModel { SettingsViewModel(getNewTokenUseCase = get()) }
 }

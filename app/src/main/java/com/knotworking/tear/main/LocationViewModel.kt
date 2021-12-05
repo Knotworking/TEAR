@@ -1,14 +1,17 @@
 package com.knotworking.tear.main
 
 import android.util.Log
+import com.knotworking.domain.api.PostLocationUseCase
 import com.knotworking.domain.location.GetLocationUseCase
+import com.knotworking.domain.location.Location
 import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 class LocationViewModel(
-    private val getLocationUseCase: GetLocationUseCase
+    private val getLocationUseCase: GetLocationUseCase,
+    private val postLocationUseCase: PostLocationUseCase
 ) : BaseViewModel() {
     val locationViewState: StateFlow<LocationViewState>
         get() = _locationViewState
@@ -23,7 +26,7 @@ class LocationViewModel(
         _locationViewState.value = _locationViewState.value.copy(hasError = true)
     }
 
-    fun startLocationUpdates() {
+    fun getLocation() {
         locationFlow = launchInViewModelScope {
             _locationViewState.emit(
                 _locationViewState.value.copy(
@@ -60,6 +63,16 @@ class LocationViewModel(
         launchInViewModelScope {
             // keep the last value
             _locationViewState.emit(_locationViewState.value.copy(receivingUpdates = false))
+        }
+    }
+
+    fun postLocation() {
+        launchInViewModelScope {
+            val location = Location(latitude = _locationViewState.value.latitude!!, _locationViewState.value.longitude!!)
+            val success = postLocationUseCase.invoke(params = location)
+            if (success) {
+                Log.d("TAG", "location update successful")
+            }
         }
     }
 

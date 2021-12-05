@@ -5,5 +5,5 @@ import com.knotworking.domain.location.Location
 interface ApiRepository {
     suspend fun getNewToken(): Boolean
 
-    suspend fun setCurrentLocation(location: Location)
+    suspend fun setCurrentLocation(location: Location): Boolean
 }
