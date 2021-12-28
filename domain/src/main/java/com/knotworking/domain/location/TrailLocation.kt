@@ -6,5 +6,4 @@ data class TrailLocation(
     val kmProgress: Double,
     val percentageProgress: Double,
     val metresToTrail: Double?
-) :
-    Location(latitude, longitude)
+) : Location(latitude, longitude)

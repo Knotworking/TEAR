@@ -59,7 +59,7 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
                 Text(
                     text = "${
                         locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
-                    }${"${locationViewState.longitude?.toString()} lon" ?: ""}"
+                    }${"${locationViewState.longitude?.toString()} lon"}"
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
@@ -106,7 +106,7 @@ internal fun GetLocationButton(
         if (isGranted) {
             // Permission Accepted: Do something
             Log.d("TAG", "PERMISSION GRANTED")
-            viewModel.getLocation()
+            viewModel.updateLocation()
         } else {
             // Permission Denied: Do something
             Log.d("TAG", "PERMISSION DENIED")
@@ -117,11 +117,11 @@ internal fun GetLocationButton(
         if (locationViewState.receivingUpdates) {
             viewModel.stopLocationUpdates()
         } else {
-            getLocation(context, viewModel, launcher)
+            updateLocation(context, viewModel, launcher)
         }
     }) {
         when {
-            locationViewState.loading -> {
+            locationViewState.loadingLocation -> {
                 CircularProgressIndicator(color = Color.White)
             }
             locationViewState.receivingUpdates -> {
@@ -134,7 +134,7 @@ internal fun GetLocationButton(
     }
 }
 
-private fun getLocation(
+private fun updateLocation(
     context: Context,
     viewModel: LocationViewModel,
     launcher: ManagedActivityResultLauncher<String, Boolean>
@@ -142,7 +142,7 @@ private fun getLocation(
     when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
         true -> {
             // Some work that requires permission
-            viewModel.getLocation()
+            viewModel.updateLocation()
         }
         else -> {
             // Asking for permission
@@ -158,6 +158,13 @@ internal fun UpdateLocationButton(
 ) {
     Button(enabled = locationViewState.latitude != null && locationViewState.longitude != null,
         onClick = { viewModel.postLocation() }) {
-        Text(text = "Post Location")
+        when {
+            locationViewState.postingLocation -> {
+                CircularProgressIndicator(color = Color.White)
+            }
+            else -> {
+                Text(text = "Post Location")
+            }
+        }
     }
 }

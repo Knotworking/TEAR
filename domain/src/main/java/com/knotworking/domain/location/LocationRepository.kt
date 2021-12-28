@@ -8,5 +8,7 @@ interface LocationRepository {
     val receivingLocationUpdates: StateFlow<Boolean>
 
     @ExperimentalCoroutinesApi
-    suspend fun getTrailLocation(): Flow<TrailLocation>
+    suspend fun updateTrailLocation(): Flow<TrailLocation>
+
+    suspend fun getLastTrailLocation(): TrailLocation?
 }
