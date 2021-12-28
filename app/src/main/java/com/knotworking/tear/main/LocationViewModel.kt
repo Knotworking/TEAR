@@ -2,19 +2,25 @@ package com.knotworking.tear.main
 
 import android.util.Log
 import com.knotworking.domain.api.PostLocationUseCase
-import com.knotworking.domain.location.GetLocationUseCase
+import com.knotworking.domain.location.GetLastLocationUseCase
+import com.knotworking.domain.location.UpdateLocationUseCase
 import com.knotworking.domain.location.Location
+import com.knotworking.domain.location.TrailLocation
 import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 class LocationViewModel(
-    private val getLocationUseCase: GetLocationUseCase,
-    private val postLocationUseCase: PostLocationUseCase
+    private val updateLocationUseCase: UpdateLocationUseCase,
+    private val postLocationUseCase: PostLocationUseCase,
+    private val getLastLocationUseCase: GetLastLocationUseCase
 ) : BaseViewModel() {
-    val locationViewState: StateFlow<LocationViewState>
-        get() = _locationViewState
+    val locationViewState: StateFlow<LocationViewState> by lazy {
+        loadLastLocation()
+        return@lazy _locationViewState
+    }
+
     private var _locationViewState = MutableStateFlow(
         LocationViewState()
     )
@@ -31,7 +37,16 @@ class LocationViewModel(
         )
     }
 
-    fun getLocation() {
+    private fun loadLastLocation() {
+        launchInViewModelScope {
+            val trailLocation = getLastLocationUseCase.invoke(Unit)
+            trailLocation?.let {
+                onNewLocation(it)
+            }
+        }
+    }
+
+    fun updateLocation() {
         locationFlow = launchInViewModelScope {
             _locationViewState.emit(
                 _locationViewState.value.copy(
@@ -39,7 +54,7 @@ class LocationViewModel(
                     loadingLocation = true
                 )
             )
-            getLocationUseCase(Unit).onStart {
+            updateLocationUseCase(Unit).onStart {
                 // Code only comes here after the first (and only) value is emitted
 //                Log.i("TAG","Fetching latest location")
 //                _locationViewState.value =
@@ -49,18 +64,22 @@ class LocationViewModel(
                 _locationViewState.value = LocationViewState(hasError = true)
             }.first().also {
                 stopLocationUpdates()
-                _locationViewState.value =
-                    LocationViewState(
-                        receivingUpdates = false,
-                        loadingLocation = false,
-                        latitude = it.latitude,
-                        longitude = it.longitude,
-                        kmProgress = it.kmProgress,
-                        percentageProgress = it.percentageProgress,
-                        distanceToTrail = it.metresToTrail
-                    )
+                onNewLocation(it)
             }
         }
+    }
+
+    private fun onNewLocation(trailLocation: TrailLocation) {
+        _locationViewState.value =
+            LocationViewState(
+                receivingUpdates = false,
+                loadingLocation = false,
+                latitude = trailLocation.latitude,
+                longitude = trailLocation.longitude,
+                kmProgress = trailLocation.kmProgress,
+                percentageProgress = trailLocation.percentageProgress,
+                distanceToTrail = trailLocation.metresToTrail
+            )
     }
 
     fun stopLocationUpdates() {

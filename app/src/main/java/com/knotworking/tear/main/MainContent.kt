@@ -106,7 +106,7 @@ internal fun GetLocationButton(
         if (isGranted) {
             // Permission Accepted: Do something
             Log.d("TAG", "PERMISSION GRANTED")
-            viewModel.getLocation()
+            viewModel.updateLocation()
         } else {
             // Permission Denied: Do something
             Log.d("TAG", "PERMISSION DENIED")
@@ -117,7 +117,7 @@ internal fun GetLocationButton(
         if (locationViewState.receivingUpdates) {
             viewModel.stopLocationUpdates()
         } else {
-            getLocation(context, viewModel, launcher)
+            updateLocation(context, viewModel, launcher)
         }
     }) {
         when {
@@ -134,7 +134,7 @@ internal fun GetLocationButton(
     }
 }
 
-private fun getLocation(
+private fun updateLocation(
     context: Context,
     viewModel: LocationViewModel,
     launcher: ManagedActivityResultLauncher<String, Boolean>
@@ -142,7 +142,7 @@ private fun getLocation(
     when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
         true -> {
             // Some work that requires permission
-            viewModel.getLocation()
+            viewModel.updateLocation()
         }
         else -> {
             // Asking for permission

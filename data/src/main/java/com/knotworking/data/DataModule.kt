@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.knotworking.data.api.*
 import com.knotworking.data.db.TearDatabaseProvider
+import com.knotworking.data.location.LocalLocationDataSource
+import com.knotworking.data.location.LocationDataSource
 import com.knotworking.data.location.LocationRepositoryImpl
 import com.knotworking.data.location.SharedLocationManager
 import com.knotworking.data.route.LocalRouteDataSource
@@ -70,10 +72,12 @@ val exampleDataModule = module {
 
 val locationDataModule = module {
     single { SharedLocationManager(context = androidContext(), externalScope = GlobalScope) }
+    single<LocationDataSource> { LocalLocationDataSource(sharedPrefs = get()) }
     single<LocationRepository> {
         LocationRepositoryImpl(
             sharedLocationManager = get(),
-            routeDataSource = get()
+            routeDataSource = get(),
+            locationDataSource = get()
         )
     }
 }

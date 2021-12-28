@@ -12,8 +12,9 @@ val presentationModule = module {
     viewModel { WordViewModel(getRandomWordUseCase = get()) }
     viewModel {
         LocationViewModel(
-            getLocationUseCase = get(),
-            postLocationUseCase = get()
+            updateLocationUseCase = get(),
+            postLocationUseCase = get(),
+            getLastLocationUseCase = get()
         )
     }
     viewModel { SettingsViewModel(getNewTokenUseCase = get()) }

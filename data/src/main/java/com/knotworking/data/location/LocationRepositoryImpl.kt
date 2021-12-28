@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.flow
 
 class LocationRepositoryImpl(
     private val sharedLocationManager: SharedLocationManager,
-    private val routeDataSource: RouteDataSource
+    private val routeDataSource: RouteDataSource,
+    private val locationDataSource: LocationDataSource
 ) : LocationRepository {
     /**
      * Status of whether the app is actively subscribed to location changes.
@@ -25,10 +26,16 @@ class LocationRepositoryImpl(
      * Get the users current location and calculate their trail position
      */
     @ExperimentalCoroutinesApi
-    override suspend fun getTrailLocation(): Flow<TrailLocation> {
+    override suspend fun updateTrailLocation(): Flow<TrailLocation> {
         val location = sharedLocationManager.locationFlow().first()
 //        delay(1000L)
-        return flow { emit(routeDataSource.getTrailLocation(Location(location.latitude, location.longitude))) }
+        val trailLocation = routeDataSource.getTrailLocation(Location(location.latitude, location.longitude))
+        locationDataSource.storeLastTrailLocation(trailLocation)
+        return flow { emit(trailLocation) }
+    }
+
+    override suspend fun getLastTrailLocation(): TrailLocation? {
+        return locationDataSource.getLastTrailLocation()
     }
 
 }

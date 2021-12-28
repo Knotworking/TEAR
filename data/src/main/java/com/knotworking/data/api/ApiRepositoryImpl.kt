@@ -1,6 +1,5 @@
 package com.knotworking.data.api
 
-import android.util.Log
 import com.knotworking.data.BuildConfig
 import com.knotworking.data.api.models.AuthRequest
 import com.knotworking.domain.api.ApiRepository
