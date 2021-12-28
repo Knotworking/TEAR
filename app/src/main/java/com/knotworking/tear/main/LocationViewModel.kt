@@ -23,7 +23,12 @@ class LocationViewModel(
     private var locationFlow: Job? = null
 
     override val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        _locationViewState.value = _locationViewState.value.copy(hasError = true)
+        _locationViewState.value = _locationViewState.value.copy(
+            hasError = true,
+            loadingLocation = false,
+            postingLocation = false,
+            snackbarText = throwable.message
+        )
     }
 
     fun getLocation() {
@@ -31,7 +36,7 @@ class LocationViewModel(
             _locationViewState.emit(
                 _locationViewState.value.copy(
                     receivingUpdates = true,
-                    loading = true
+                    loadingLocation = true
                 )
             )
             getLocationUseCase(Unit).onStart {
@@ -47,7 +52,7 @@ class LocationViewModel(
                 _locationViewState.value =
                     LocationViewState(
                         receivingUpdates = false,
-                        loading = false,
+                        loadingLocation = false,
                         latitude = it.latitude,
                         longitude = it.longitude,
                         kmProgress = it.kmProgress,
@@ -68,8 +73,13 @@ class LocationViewModel(
 
     fun postLocation() {
         launchInViewModelScope {
-            val location = Location(latitude = _locationViewState.value.latitude!!, _locationViewState.value.longitude!!)
+            _locationViewState.emit(_locationViewState.value.copy(postingLocation = true))
+            val location = Location(
+                latitude = _locationViewState.value.latitude!!,
+                _locationViewState.value.longitude!!
+            )
             val success = postLocationUseCase.invoke(params = location)
+            _locationViewState.emit(_locationViewState.value.copy(postingLocation = false))
             if (success) {
                 showSnackbar("Location successfully updated.")
                 Log.d("TAG", "location update successful")
@@ -101,7 +111,8 @@ class LocationViewModel(
 
     data class LocationViewState(
         val hasError: Boolean = false,
-        val loading: Boolean = false,
+        val loadingLocation: Boolean = false,
+        val postingLocation: Boolean = false,
         val snackbarText: String? = null,
         val receivingUpdates: Boolean = false,
         val latitude: Double? = null,

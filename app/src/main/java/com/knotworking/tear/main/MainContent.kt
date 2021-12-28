@@ -59,7 +59,7 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
                 Text(
                     text = "${
                         locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
-                    }${"${locationViewState.longitude?.toString()} lon" ?: ""}"
+                    }${"${locationViewState.longitude?.toString()} lon"}"
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
@@ -121,7 +121,7 @@ internal fun GetLocationButton(
         }
     }) {
         when {
-            locationViewState.loading -> {
+            locationViewState.loadingLocation -> {
                 CircularProgressIndicator(color = Color.White)
             }
             locationViewState.receivingUpdates -> {
@@ -158,6 +158,13 @@ internal fun UpdateLocationButton(
 ) {
     Button(enabled = locationViewState.latitude != null && locationViewState.longitude != null,
         onClick = { viewModel.postLocation() }) {
-        Text(text = "Post Location")
+        when {
+            locationViewState.postingLocation -> {
+                CircularProgressIndicator(color = Color.White)
+            }
+            else -> {
+                Text(text = "Post Location")
+            }
+        }
     }
 }
