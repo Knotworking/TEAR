@@ -1,5 +1,5 @@
 ext {
-    def retrofitVersion = "2.6.2"
+    def retrofitVersion = "2.9.0"
     def gsonVersion = "2.8.5"
     def koinVersion = "3.1.4"
     def loggingVersion = "3.14.0"
