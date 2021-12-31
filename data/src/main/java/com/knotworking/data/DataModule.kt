@@ -45,7 +45,8 @@ val wordpressApiModule = module {
         ApiRepositoryImpl(
             wordpressApi = get(),
             tokenDataSource = get(),
-            locationDataSource = get()
+            locationDataSource = get(),
+            markerDataSource = get()
         )
     }
 }
