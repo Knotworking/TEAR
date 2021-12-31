@@ -8,6 +8,8 @@ import com.knotworking.data.location.LocalLocationDataSource
 import com.knotworking.data.location.LocationDataSource
 import com.knotworking.data.location.LocationRepositoryImpl
 import com.knotworking.data.location.SharedLocationManager
+import com.knotworking.data.location.marker.LocalMarkerDataSource
+import com.knotworking.data.location.marker.MarkerDataSource
 import com.knotworking.data.route.LocalRouteDataSource
 import com.knotworking.data.route.RouteDataSource
 import com.knotworking.data.words.LocalWordDataSource
@@ -73,11 +75,13 @@ val exampleDataModule = module {
 val locationDataModule = module {
     single { SharedLocationManager(context = androidContext(), externalScope = GlobalScope) }
     single<LocationDataSource> { LocalLocationDataSource(sharedPrefs = get()) }
+    single<MarkerDataSource> { LocalMarkerDataSource(sharedPrefs = get()) }
     single<LocationRepository> {
         LocationRepositoryImpl(
             sharedLocationManager = get(),
             routeDataSource = get(),
-            locationDataSource = get()
+            locationDataSource = get(),
+            markerDataSource = get()
         )
     }
 }

@@ -17,5 +17,11 @@ val presentationModule = module {
             getLastLocationUseCase = get()
         )
     }
-    viewModel { SettingsViewModel(getNewTokenUseCase = get()) }
+    viewModel {
+        SettingsViewModel(
+            getNewTokenUseCase = get(),
+            getMarkerTextUseCase = get(),
+            setMarkerTextUseCase = get()
+        )
+    }
 }

@@ -1,5 +1,6 @@
 package com.knotworking.data.location
 
+import com.knotworking.data.location.marker.MarkerDataSource
 import com.knotworking.data.route.RouteDataSource
 import com.knotworking.domain.location.Location
 import com.knotworking.domain.location.LocationRepository
@@ -14,7 +15,8 @@ import kotlinx.coroutines.flow.flow
 class LocationRepositoryImpl(
     private val sharedLocationManager: SharedLocationManager,
     private val routeDataSource: RouteDataSource,
-    private val locationDataSource: LocationDataSource
+    private val locationDataSource: LocationDataSource,
+    private val markerDataSource: MarkerDataSource
 ) : LocationRepository {
     /**
      * Status of whether the app is actively subscribed to location changes.
@@ -36,6 +38,14 @@ class LocationRepositoryImpl(
 
     override suspend fun getLastTrailLocation(): TrailLocation? {
         return locationDataSource.getLastTrailLocation()
+    }
+
+    override suspend fun setMarkerText(text: String) {
+        return markerDataSource.setMarkerText(text)
+    }
+
+    override suspend fun getMarkerText(): String {
+        return markerDataSource.getMarkerText()
     }
 
 }
