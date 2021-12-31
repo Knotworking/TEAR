@@ -5,6 +5,7 @@ import com.knotworking.data.db.TearDatabase
 import com.knotworking.domain.location.Location
 import com.knotworking.domain.location.TrailLocation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.time.Instant
 import android.location.Location as AndroidLocation
 
 interface RouteDataSource {
@@ -41,7 +42,8 @@ class LocalRouteDataSource(
             longitude = location.longitude,
             kmProgress = kmProgress ?: 0.0,
             percentageProgress = percentage,
-            metresToTrail = if (kmMarker != null) distanceToKmMarker(location, kmMarker) else null
+            metresToTrail = if (kmMarker != null) distanceToKmMarker(location, kmMarker) else null,
+            updatedAtSeconds = Instant.now().epochSecond
         )
     }
 

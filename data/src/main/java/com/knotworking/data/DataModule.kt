@@ -41,7 +41,13 @@ val wordpressApiModule = module {
     single<TokenDataSource> { SharedPrefsTokenDataSource(sharedPrefs = get()) }
     single { AuthInterceptor(tokenDataSource = get()) }
     single { provideOkHttpClient(authInterceptor = get()) }
-    single<ApiRepository> { ApiRepositoryImpl(wordpressApi = get(), tokenDataSource = get()) }
+    single<ApiRepository> {
+        ApiRepositoryImpl(
+            wordpressApi = get(),
+            tokenDataSource = get(),
+            locationDataSource = get()
+        )
+    }
 }
 
 internal fun provideRetrofit(okHttpClient: OkHttpClient, url: String): Retrofit {

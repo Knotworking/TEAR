@@ -3,13 +3,13 @@ package com.knotworking.tear.main
 import android.util.Log
 import com.knotworking.domain.api.PostLocationUseCase
 import com.knotworking.domain.location.GetLastLocationUseCase
-import com.knotworking.domain.location.UpdateLocationUseCase
-import com.knotworking.domain.location.Location
 import com.knotworking.domain.location.TrailLocation
+import com.knotworking.domain.location.UpdateLocationUseCase
 import com.knotworking.tear.BaseViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import java.time.Instant
 
 class LocationViewModel(
     private val updateLocationUseCase: UpdateLocationUseCase,
@@ -78,7 +78,8 @@ class LocationViewModel(
                 longitude = trailLocation.longitude,
                 kmProgress = trailLocation.kmProgress,
                 percentageProgress = trailLocation.percentageProgress,
-                distanceToTrail = trailLocation.metresToTrail
+                distanceToTrail = trailLocation.metresToTrail,
+                updatedAt = Instant.ofEpochSecond(trailLocation.updatedAtSeconds)
             )
     }
 
@@ -93,11 +94,7 @@ class LocationViewModel(
     fun postLocation() {
         launchInViewModelScope {
             _locationViewState.emit(_locationViewState.value.copy(postingLocation = true))
-            val location = Location(
-                latitude = _locationViewState.value.latitude!!,
-                _locationViewState.value.longitude!!
-            )
-            val success = postLocationUseCase.invoke(params = location)
+            val success = postLocationUseCase.invoke(Unit)
             _locationViewState.emit(_locationViewState.value.copy(postingLocation = false))
             if (success) {
                 showSnackbar("Location successfully updated.")
@@ -138,6 +135,7 @@ class LocationViewModel(
         val longitude: Double? = null,
         val kmProgress: Double? = null,
         val percentageProgress: Double? = null,
-        val distanceToTrail: Double? = null
+        val distanceToTrail: Double? = null,
+        val updatedAt: Instant? = null
     )
 }

@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.knotworking.tear.nav.Screen
+import java.time.Duration
+import java.time.Instant
 
 @Composable
 internal fun LocationContent(navController: NavController, viewModel: LocationViewModel) {
@@ -61,6 +63,7 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
                         locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
                     }${"${locationViewState.longitude?.toString()} lon"}"
                 )
+                Text(text = "Updated ${locationViewState.updatedAt?.let { getTimeSinceString(it) } ?: "an unknown time"} ago")
                 Spacer(modifier = Modifier.height(16.dp))
                 GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -68,6 +71,12 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
             }
         }
     }
+}
+
+private fun getTimeSinceString(timestamp: Instant): String {
+    val now = Instant.now()
+    val duration = Duration.between(timestamp, now)
+    return duration.toString()
 }
 
 @Composable
