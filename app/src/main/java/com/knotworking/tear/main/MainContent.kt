@@ -18,6 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import java.time.Instant
 import java.time.ZoneId
@@ -35,14 +38,30 @@ internal fun LocationContentWrapper(openSettings: () -> Unit, viewModel: Locatio
         postLocation = { viewModel.postLocation() })
 }
 
+class LocationViewStateParameterProvider :
+    PreviewParameterProvider<LocationViewModel.LocationViewState> {
+    override val values = sequenceOf(
+        LocationViewModel.LocationViewState(
+            kmProgress = 2568.0,
+            percentageProgress = 51.4,
+            distanceToTrail = 34.4,
+            latitude = 42.704819,
+            longitude = 27.899409,
+            updatedAt = Instant.now()
+        )
+    )
+}
+
+
+@Preview
 @Composable
 internal fun LocationContent(
-    locationViewState: LocationViewModel.LocationViewState,
-    openSettings: () -> Unit,
-    hideSnackbar: () -> Unit,
-    updateLocation: () -> Unit,
-    stopLocationUpdates: () -> Unit,
-    postLocation: () -> Unit
+    @PreviewParameter(LocationViewStateParameterProvider::class) locationViewState: LocationViewModel.LocationViewState,
+    openSettings: () -> Unit = {},
+    hideSnackbar: () -> Unit = {},
+    updateLocation: () -> Unit = {},
+    stopLocationUpdates: () -> Unit = {},
+    postLocation: () -> Unit = {}
 ) {
     val scaffoldState = rememberScaffoldState()
 
