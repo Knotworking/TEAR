@@ -19,26 +19,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.knotworking.tear.nav.Screen
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Composable
-internal fun LocationContent(navController: NavController, viewModel: LocationViewModel) {
+internal fun LocationContentWrapper(openSettings: () -> Unit, viewModel: LocationViewModel) {
     val locationViewState by viewModel.locationViewState.collectAsState()
+    LocationContent(
+        locationViewState = locationViewState,
+        openSettings = openSettings,
+        hideSnackbar = { viewModel.hideSnackbar() },
+        updateLocation = { viewModel.updateLocation() },
+        stopLocationUpdates = { viewModel.stopLocationUpdates() },
+        postLocation = { viewModel.postLocation() })
+}
+
+@Composable
+internal fun LocationContent(
+    locationViewState: LocationViewModel.LocationViewState,
+    openSettings: () -> Unit,
+    hideSnackbar: () -> Unit,
+    updateLocation: () -> Unit,
+    stopLocationUpdates: () -> Unit,
+    postLocation: () -> Unit
+) {
     val scaffoldState = rememberScaffoldState()
 
     Snackbar(
-        viewModel = viewModel,
+        hideSnackbar = hideSnackbar,
         locationViewState = locationViewState,
         scaffoldState = scaffoldState
     )
     Scaffold(scaffoldState = scaffoldState) {
         Box(modifier = Modifier.fillMaxSize()) {
             IconButton(
-                onClick = { navController.navigate(Screen.SettingsScreen.route) },
+                onClick = openSettings,
                 modifier = Modifier.align(Alignment.TopEnd)
             ) {
                 Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
@@ -66,9 +82,16 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
                 )
                 Text(text = "Updated: ${locationViewState.updatedAt?.let { formatTimestamp(it) } ?: "unknown"}")
                 Spacer(modifier = Modifier.height(16.dp))
-                GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
+                GetLocationButton(
+                    locationViewState = locationViewState,
+                    updateLocation = updateLocation,
+                    stopLocationUpdates = stopLocationUpdates
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                UpdateLocationButton(viewModel = viewModel, locationViewState = locationViewState)
+                UpdateLocationButton(
+                    locationViewState = locationViewState,
+                    postLocation = postLocation
+                )
             }
         }
     }
@@ -83,7 +106,7 @@ private fun formatTimestamp(timestamp: Instant): String {
 
 @Composable
 internal fun Snackbar(
-    viewModel: LocationViewModel,
+    hideSnackbar: () -> Unit,
     locationViewState: LocationViewModel.LocationViewState,
     scaffoldState: ScaffoldState
 ) {
@@ -93,12 +116,8 @@ internal fun Snackbar(
                 message = locationViewState.snackbarText,
             )
             when (result) {
-                SnackbarResult.ActionPerformed -> {
-                    viewModel.hideSnackbar()
-                }
-                SnackbarResult.Dismissed -> {
-                    viewModel.hideSnackbar()
-                }
+                SnackbarResult.ActionPerformed -> hideSnackbar()
+                SnackbarResult.Dismissed -> hideSnackbar()
             }
         }
     }
@@ -106,8 +125,9 @@ internal fun Snackbar(
 
 @Composable
 internal fun GetLocationButton(
-    viewModel: LocationViewModel,
-    locationViewState: LocationViewModel.LocationViewState
+    locationViewState: LocationViewModel.LocationViewState,
+    updateLocation: () -> Unit,
+    stopLocationUpdates: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -117,7 +137,7 @@ internal fun GetLocationButton(
         if (isGranted) {
             // Permission Accepted: Do something
             Log.d("TAG", "PERMISSION GRANTED")
-            viewModel.updateLocation()
+            updateLocation()
         } else {
             // Permission Denied: Do something
             Log.d("TAG", "PERMISSION DENIED")
@@ -126,9 +146,13 @@ internal fun GetLocationButton(
 
     Button(onClick = {
         if (locationViewState.receivingUpdates) {
-            viewModel.stopLocationUpdates()
+            stopLocationUpdates()
         } else {
-            updateLocation(context, viewModel, launcher)
+            updateLocationWithPermission(
+                context = context,
+                launcher = launcher,
+                updateLocation = updateLocation
+            )
         }
     }) {
         when {
@@ -145,15 +169,15 @@ internal fun GetLocationButton(
     }
 }
 
-private fun updateLocation(
+private fun updateLocationWithPermission(
     context: Context,
-    viewModel: LocationViewModel,
+    updateLocation: () -> Unit,
     launcher: ManagedActivityResultLauncher<String, Boolean>
 ) {
     when (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
         true -> {
             // Some work that requires permission
-            viewModel.updateLocation()
+            updateLocation()
         }
         else -> {
             // Asking for permission
@@ -164,11 +188,13 @@ private fun updateLocation(
 
 @Composable
 internal fun UpdateLocationButton(
-    viewModel: LocationViewModel,
-    locationViewState: LocationViewModel.LocationViewState
+    locationViewState: LocationViewModel.LocationViewState,
+    postLocation: () -> Unit
 ) {
-    Button(enabled = locationViewState.latitude != null && locationViewState.longitude != null,
-        onClick = { viewModel.postLocation() }) {
+    Button(
+        enabled = locationViewState.latitude != null && locationViewState.longitude != null,
+        onClick = postLocation
+    ) {
         when {
             locationViewState.postingLocation -> {
                 CircularProgressIndicator(color = Color.White)
