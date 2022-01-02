@@ -18,10 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.knotworking.tear.ui.theme.LightGrey
+import com.knotworking.tear.ui.theme.YellowSecondary
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -84,8 +88,11 @@ internal fun LocationContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "${locationViewState.kmProgress?.toInt()}km")
-                Text("${String.format("%.2f", locationViewState.percentageProgress)}%")
+                TrailProgressIndicator(
+                    locationViewState = locationViewState,
+                    progressSize = 200f
+                )
+
                 Text(
                     "${
                         String.format(
@@ -107,7 +114,7 @@ internal fun LocationContent(
                     stopLocationUpdates = stopLocationUpdates
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                UpdateLocationButton(
+                PostLocationButton(
                     locationViewState = locationViewState,
                     postLocation = postLocation
                 )
@@ -121,6 +128,47 @@ private fun formatTimestamp(timestamp: Instant): String {
     val formatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault())
 
     return formatter.format(timestamp)
+}
+
+@Composable
+internal fun TrailProgressIndicator(
+    locationViewState: LocationViewModel.LocationViewState,
+    progressSize: Float
+) {
+    Box(
+        Modifier.width(IntrinsicSize.Min),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            progress = 1f,
+            strokeWidth = 10.dp,
+            color = LightGrey,
+            modifier = Modifier
+                .height(progressSize.dp)
+                .width(progressSize.dp)
+        )
+        CircularProgressIndicator(
+            progress = locationViewState.percentageProgress?.div(100)?.toFloat() ?: 0f,
+            strokeWidth = 10.dp,
+            modifier = Modifier
+                .height(progressSize.dp)
+                .width(progressSize.dp)
+        )
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "${locationViewState.kmProgress?.toInt()}km",
+                style = TextStyle(fontSize = 20.sp)
+            )
+            Text(
+                "${String.format("%.2f", locationViewState.percentageProgress)}%",
+                style = TextStyle(fontSize = 20.sp)
+            )
+        }
+    }
 }
 
 @Composable
@@ -182,7 +230,7 @@ internal fun GetLocationButton(
                 Text(text = "Stop")
             }
             else -> {
-                Text(text = "Get Location")
+                Text(text = "Get Location", color = Color.White)
             }
         }
     }
@@ -206,20 +254,21 @@ private fun updateLocationWithPermission(
 }
 
 @Composable
-internal fun UpdateLocationButton(
+internal fun PostLocationButton(
     locationViewState: LocationViewModel.LocationViewState,
     postLocation: () -> Unit
 ) {
     Button(
         enabled = locationViewState.latitude != null && locationViewState.longitude != null,
-        onClick = postLocation
+        onClick = postLocation,
+        colors = ButtonDefaults.buttonColors(backgroundColor = YellowSecondary)
     ) {
         when {
             locationViewState.postingLocation -> {
                 CircularProgressIndicator(color = Color.White)
             }
             else -> {
-                Text(text = "Post Location")
+                Text(text = "Post Location", color = Color.White)
             }
         }
     }

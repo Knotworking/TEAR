@@ -1,41 +1,52 @@
 package com.knotworking.tear.settings
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SettingsContent(viewModel: SettingsViewModel) {
     val settingsViewState by viewModel.settingsViewState.collectAsState()
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    val scaffoldState = rememberScaffoldState()
+
+    Scaffold(scaffoldState = scaffoldState) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(text = "Settings")
-            Button(onClick = { viewModel.getNewToken() }) {
-                when {
-                    settingsViewState.loginInProgress -> {
-                        CircularProgressIndicator(color = Color.White)
-                    }
-                    else -> {
-                        Text(text = "Get Token")
-                    }
-                }
 
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Settings", style = TextStyle(fontSize = 20.sp),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Button(
+                    onClick = { viewModel.getNewToken() },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    when {
+                        settingsViewState.loginInProgress -> {
+                            CircularProgressIndicator(color = Color.White)
+                        }
+                        else -> {
+                            Text(text = "Get Token", color = Color.White)
+                        }
+                    }
+
+                }
+                MarkerTextInput(viewModel = viewModel, settingsViewState = settingsViewState)
             }
-            MarkerTextInput(viewModel = viewModel, settingsViewState = settingsViewState)
         }
     }
 }
@@ -53,8 +64,11 @@ fun MarkerTextInput(
             onValueChange = { text = it },
             label = { Text("Marker text") }
         )
-        Button(onClick = { viewModel.setMarkerText(text) }) {
-            Text(text = "Set")
+        Button(
+            onClick = { viewModel.setMarkerText(text) },
+            modifier = Modifier.padding(start = 16.dp)
+        ) {
+            Text(text = "Set", color = Color.White)
         }
 
     }
