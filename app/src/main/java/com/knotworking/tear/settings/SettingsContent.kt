@@ -1,15 +1,11 @@
 package com.knotworking.tear.settings
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +35,27 @@ fun SettingsContent(viewModel: SettingsViewModel) {
                 }
 
             }
+            MarkerTextInput(viewModel = viewModel, settingsViewState = settingsViewState)
         }
+    }
+}
+
+@Composable
+fun MarkerTextInput(
+    viewModel: SettingsViewModel,
+    settingsViewState: SettingsViewModel.SettingsViewState
+) {
+    var text by remember { mutableStateOf(settingsViewState.markerText) }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text("Marker text") }
+        )
+        Button(onClick = { viewModel.setMarkerText(text) }) {
+            Text(text = "Set")
+        }
+
     }
 }

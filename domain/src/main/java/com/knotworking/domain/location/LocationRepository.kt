@@ -11,4 +11,8 @@ interface LocationRepository {
     suspend fun updateTrailLocation(): Flow<TrailLocation>
 
     suspend fun getLastTrailLocation(): TrailLocation?
+
+    suspend fun setMarkerText(text: String)
+
+    suspend fun getMarkerText(): String
 }

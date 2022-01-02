@@ -5,5 +5,6 @@ data class TrailLocation(
     override val longitude: Double,
     val kmProgress: Double,
     val percentageProgress: Double,
-    val metresToTrail: Double?
+    val metresToTrail: Double?,
+    val updatedAtSeconds: Long
 ) : Location(latitude, longitude)

@@ -1,12 +1,11 @@
 package com.knotworking.domain.api
 
 import com.knotworking.domain.BaseUseCase
-import com.knotworking.domain.location.Location
 
 
-typealias PostLocationBaseUseCase = BaseUseCase<Location, Boolean>
+typealias PostLocationBaseUseCase = BaseUseCase<Unit, Boolean>
 
 class PostLocationUseCase(private val apiRepository: ApiRepository) : PostLocationBaseUseCase {
-    override suspend fun invoke(params: Location): Boolean =
-        apiRepository.setCurrentLocation(location = params)
+    override suspend fun invoke(params: Unit): Boolean =
+        apiRepository.postCurrentLocation()
 }

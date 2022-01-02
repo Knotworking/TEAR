@@ -21,6 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.knotworking.tear.nav.Screen
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun LocationContent(navController: NavController, viewModel: LocationViewModel) {
@@ -61,6 +64,7 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
                         locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
                     }${"${locationViewState.longitude?.toString()} lon"}"
                 )
+                Text(text = "Updated: ${locationViewState.updatedAt?.let { formatTimestamp(it) } ?: "unknown"}")
                 Spacer(modifier = Modifier.height(16.dp))
                 GetLocationButton(viewModel = viewModel, locationViewState = locationViewState)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -68,6 +72,13 @@ internal fun LocationContent(navController: NavController, viewModel: LocationVi
             }
         }
     }
+}
+
+private fun formatTimestamp(timestamp: Instant): String {
+    val pattern = "dd/MM/yyyy HH:mm O"
+    val formatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault())
+
+    return formatter.format(timestamp)
 }
 
 @Composable
