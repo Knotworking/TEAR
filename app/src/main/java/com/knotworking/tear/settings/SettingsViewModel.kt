@@ -23,7 +23,10 @@ class SettingsViewModel(
     )
 
     override val coroutineExceptionHandler = CoroutineExceptionHandler {_, throwable ->
-        // do something
+        _settingsViewState.value = _settingsViewState.value.copy(
+            loginInProgress = false,
+            snackbarText = throwable.message
+        )
     }
 
     private fun loadInitialState() {
@@ -46,21 +49,47 @@ class SettingsViewModel(
             )
 
             val success = getNewTokenUseCase.invoke(Unit)
-            _settingsViewState.emit(
-                _settingsViewState.value.copy(
-                    loginInProgress = false
+            if (success) {
+                _settingsViewState.value = _settingsViewState.value.copy(
+                    loginInProgress = false,
+                    snackbarText = "Token retrieved."
                 )
-            )
+            } else {
+                _settingsViewState.value = _settingsViewState.value.copy(
+                    loginInProgress = false,
+                    snackbarText = "Unable to get new token."
+                )
+            }
         }
     }
 
     fun setMarkerText(text: String) {
         launchInViewModelScope {
-            //TODO progress button
             setMarkerTextUseCase.invoke(text)
             _settingsViewState.emit(
                 _settingsViewState.value.copy(
                     markerText = text
+                )
+            )
+            showSnackbar("Marker text set. Remember to repost your location.")
+        }
+    }
+
+    fun showSnackbar(message: String) {
+        launchInViewModelScope {
+            _settingsViewState.emit(
+                _settingsViewState.value.copy(
+                    snackbarText = message
+                )
+            )
+        }
+    }
+
+    fun hideSnackbar() {
+        launchInViewModelScope {
+            _settingsViewState.emit(
+                _settingsViewState.value.copy(
+                    snackbarText = null
                 )
             )
         }
@@ -68,6 +97,7 @@ class SettingsViewModel(
 
     data class SettingsViewState(
         val loginInProgress: Boolean = false,
-        val markerText: String = ""
+        val markerText: String = "",
+        val snackbarText: String? = null,
     )
 }
