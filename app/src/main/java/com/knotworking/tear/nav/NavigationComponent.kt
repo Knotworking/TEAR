@@ -24,7 +24,9 @@ fun NavigationComponent() {
             )
         }
         composable(route = Screen.SettingsScreen.route) {
-            SettingsContent(viewModel = settingsViewModel)
+            SettingsContent(
+                viewModel = settingsViewModel,
+                onClose = { navController.popBackStack() })
         }
     }
 }

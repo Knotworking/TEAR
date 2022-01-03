@@ -2,6 +2,8 @@ package com.knotworking.tear.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SettingsContent(viewModel: SettingsViewModel) {
+fun SettingsContent(viewModel: SettingsViewModel, onClose: () -> Unit) {
     val settingsViewState by viewModel.settingsViewState.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
@@ -26,6 +28,12 @@ fun SettingsContent(viewModel: SettingsViewModel) {
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier.align(Alignment.TopStart)
+            ) {
+                Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+            }
 
             Column(
                 modifier = Modifier.fillMaxSize(),
