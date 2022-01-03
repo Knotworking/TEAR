@@ -1,6 +1,7 @@
 package com.knotworking.tear.nav
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,6 +11,7 @@ import com.knotworking.tear.settings.SettingsContent
 import com.knotworking.tear.settings.SettingsViewModel
 import org.koin.androidx.compose.viewModel
 
+@ExperimentalComposeUiApi
 @Composable
 fun NavigationComponent() {
     val locationViewModel: LocationViewModel by viewModel()

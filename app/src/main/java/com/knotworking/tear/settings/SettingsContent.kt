@@ -6,16 +6,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@ExperimentalComposeUiApi
 @Composable
 fun SettingsContent(viewModel: SettingsViewModel, onClose: () -> Unit) {
     val settingsViewState by viewModel.settingsViewState.collectAsState()
-
     val scaffoldState = rememberScaffoldState()
 
     Snackbar(
@@ -64,12 +66,14 @@ fun SettingsContent(viewModel: SettingsViewModel, onClose: () -> Unit) {
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 fun MarkerTextInput(
     viewModel: SettingsViewModel,
     settingsViewState: SettingsViewModel.SettingsViewState
 ) {
     var text by remember { mutableStateOf(settingsViewState.markerText) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
@@ -78,7 +82,10 @@ fun MarkerTextInput(
             label = { Text("Marker text") }
         )
         Button(
-            onClick = { viewModel.setMarkerText(text) },
+            onClick = {
+                viewModel.setMarkerText(text)
+                keyboardController?.hide()
+            },
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Text(text = "Set", color = Color.White)
