@@ -9,11 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +22,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.knotworking.tear.ui.theme.LightGrey
+import com.knotworking.tear.ui.theme.SecondaryGrey
 import com.knotworking.tear.ui.theme.YellowSecondary
 import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun LocationContentWrapper(openSettings: () -> Unit, viewModel: LocationViewModel) {
@@ -68,6 +64,7 @@ internal fun LocationContent(
     postLocation: () -> Unit = {}
 ) {
     val scaffoldState = rememberScaffoldState()
+    val showInfoDialog = remember { mutableStateOf(false) }
 
     Snackbar(
         hideSnackbar = hideSnackbar,
@@ -76,6 +73,15 @@ internal fun LocationContent(
     )
     Scaffold(scaffoldState = scaffoldState) {
         Box(modifier = Modifier.fillMaxSize()) {
+            if (locationViewState.updatedAt != null) {
+                IconButton(
+                    onClick = { showInfoDialog.value = true },
+                    modifier = Modifier.align(Alignment.TopStart)
+                ) {
+                    Icon(imageVector = Icons.Filled.Info, contentDescription = "Info")
+                }
+            }
+
             IconButton(
                 onClick = openSettings,
                 modifier = Modifier.align(Alignment.TopEnd)
@@ -92,21 +98,6 @@ internal fun LocationContent(
                     locationViewState = locationViewState,
                     progressSize = 200f
                 )
-
-                Text(
-                    "${
-                        String.format(
-                            "%.2f",
-                            locationViewState.distanceToTrail?.div(1000)
-                        )
-                    }km to trail"
-                )
-                Text(
-                    text = "${
-                        locationViewState.latitude?.toString()?.plus(" lat, ") ?: ""
-                    }${"${locationViewState.longitude?.toString()} lon"}"
-                )
-                Text(text = "Updated: ${locationViewState.updatedAt?.let { formatTimestamp(it) } ?: "unknown"}")
                 Spacer(modifier = Modifier.height(16.dp))
                 GetLocationButton(
                     locationViewState = locationViewState,
@@ -119,15 +110,14 @@ internal fun LocationContent(
                     postLocation = postLocation
                 )
             }
+
+            if (showInfoDialog.value) {
+                InfoDialog(
+                    locationViewState = locationViewState,
+                    onDismiss = { showInfoDialog.value = false })
+            }
         }
     }
-}
-
-private fun formatTimestamp(timestamp: Instant): String {
-    val pattern = "dd/MM/yyyy HH:mm O"
-    val formatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault())
-
-    return formatter.format(timestamp)
 }
 
 @Composable
@@ -142,7 +132,7 @@ internal fun TrailProgressIndicator(
         CircularProgressIndicator(
             progress = 1f,
             strokeWidth = 10.dp,
-            color = LightGrey,
+            color = SecondaryGrey,
             modifier = Modifier
                 .height(progressSize.dp)
                 .width(progressSize.dp)
