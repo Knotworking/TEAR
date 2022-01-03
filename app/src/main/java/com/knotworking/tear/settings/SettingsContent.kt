@@ -16,6 +16,11 @@ fun SettingsContent(viewModel: SettingsViewModel) {
 
     val scaffoldState = rememberScaffoldState()
 
+    Snackbar(
+        hideSnackbar = { viewModel.hideSnackbar() },
+        settingsViewState = settingsViewState,
+        scaffoldState = scaffoldState
+    )
     Scaffold(scaffoldState = scaffoldState) {
         Box(
             contentAlignment = Alignment.Center,
@@ -71,5 +76,24 @@ fun MarkerTextInput(
             Text(text = "Set", color = Color.White)
         }
 
+    }
+}
+
+@Composable
+internal fun Snackbar(
+    hideSnackbar: () -> Unit,
+    settingsViewState: SettingsViewModel.SettingsViewState,
+    scaffoldState: ScaffoldState
+) {
+    LaunchedEffect(settingsViewState) {
+        if (settingsViewState.snackbarText != null) {
+            val result = scaffoldState.snackbarHostState.showSnackbar(
+                message = settingsViewState.snackbarText,
+            )
+            when (result) {
+                SnackbarResult.ActionPerformed -> hideSnackbar()
+                SnackbarResult.Dismissed -> hideSnackbar()
+            }
+        }
     }
 }
