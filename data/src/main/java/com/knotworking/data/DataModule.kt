@@ -10,6 +10,8 @@ import com.knotworking.data.location.LocationRepositoryImpl
 import com.knotworking.data.location.SharedLocationManager
 import com.knotworking.data.location.marker.LocalMarkerDataSource
 import com.knotworking.data.location.marker.MarkerDataSource
+import com.knotworking.data.route.AndroidDistanceCalculator
+import com.knotworking.data.route.DistanceCalculator
 import com.knotworking.data.route.LocalRouteDataSource
 import com.knotworking.data.route.RouteDataSource
 import com.knotworking.data.words.LocalWordDataSource
@@ -99,6 +101,13 @@ val routeDataModule = module {
 //    fun provideKmMarkerDao(database: TearDatabase): KmMarkerDao {
 //        return database.kmMarkerDao()
 //    }
+    single<DistanceCalculator> { AndroidDistanceCalculator() }
 
-    single<RouteDataSource> { LocalRouteDataSource(database = get()) }
+    single<RouteDataSource> {
+        LocalRouteDataSource(
+            database = get(),
+            distanceCalculator = get(),
+            totalKm = 6253
+        )
+    }
 }

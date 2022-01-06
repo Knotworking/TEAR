@@ -11,9 +11,8 @@ interface KmMarkerDao {
     @Query("SELECT * FROM kmmarker")
     suspend fun getAll(): List<KmMarker>
 
-    /**
-     * Examples
-     */
+    @Query("SELECT * FROM kmmarker WHERE km = :km")
+    suspend fun getForKm(km: Int): List<KmMarker>
 
     @Insert
     suspend fun insertAll(kmMarkers: List<KmMarker>)

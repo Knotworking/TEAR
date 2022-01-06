@@ -51,11 +51,11 @@ class SharedLocationManager constructor(
     @SuppressLint("MissingPermission")
     private val _locationUpdates = callbackFlow<Location> {
         val callback = object : LocationCallback() {
-            override fun onLocationResult(result: LocationResult?) {
-                result ?: return
-                Log.d(TAG, "New location: ${result.lastLocation.toText()}")
+            override fun onLocationResult(p0: LocationResult) {
+                p0 ?: return
+                Log.d(TAG, "New location: ${p0.lastLocation.toText()}")
                 // Send the new location to the Flow observers
-                trySend(result.lastLocation)
+                trySend(p0.lastLocation)
             }
         }
 
