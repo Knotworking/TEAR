@@ -43,7 +43,7 @@ internal fun InfoDialog(
                             "%.2f",
                             locationViewState.distanceToTrail?.div(1000)
                         )
-                    }km from main route",
+                    }km from closest marker",
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier.padding(bottom = itemSpacing)
                 )

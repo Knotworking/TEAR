@@ -151,7 +151,7 @@ internal fun TrailProgressIndicator(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "${locationViewState.kmProgress?.toInt()}km",
+                text = "${String.format("%.1f", locationViewState.kmProgress)}km",
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
