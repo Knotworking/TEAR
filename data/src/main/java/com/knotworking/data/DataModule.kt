@@ -14,11 +14,7 @@ import com.knotworking.data.route.AndroidDistanceCalculator
 import com.knotworking.data.route.DistanceCalculator
 import com.knotworking.data.route.LocalRouteDataSource
 import com.knotworking.data.route.RouteDataSource
-import com.knotworking.data.words.LocalWordDataSource
-import com.knotworking.data.words.WordDataSource
-import com.knotworking.data.words.WordRepositoryImpl
 import com.knotworking.domain.api.ApiRepository
-import com.knotworking.domain.example.WordRepository
 import com.knotworking.domain.location.LocationRepository
 import kotlinx.coroutines.GlobalScope
 import okhttp3.OkHttpClient
@@ -75,11 +71,6 @@ internal fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient
 
 internal fun provideWordpressApi(retrofit: Retrofit): WordpressApi =
     retrofit.create(WordpressApi::class.java)
-
-val exampleDataModule = module {
-    single<WordDataSource> { LocalWordDataSource() }
-    single<WordRepository> { WordRepositoryImpl(wordDataSource = get()) }
-}
 
 val locationDataModule = module {
     single { SharedLocationManager(context = androidContext(), externalScope = GlobalScope) }
