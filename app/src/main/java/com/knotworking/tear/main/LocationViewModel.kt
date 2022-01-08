@@ -60,7 +60,7 @@ class LocationViewModel(
 //                _locationViewState.value =
 //                    LocationViewState(receivingUpdates = true, loading = true)
             }.catch {
-                Log.e("TAG", "Error fetching trail location in viewmodel: ${it.message}")
+                Log.e(this::class.simpleName, "Error fetching trail location in viewmodel: ${it.message}")
                 _locationViewState.value = LocationViewState(hasError = true)
             }.first().also {
                 stopLocationUpdates()
@@ -98,7 +98,6 @@ class LocationViewModel(
             _locationViewState.emit(_locationViewState.value.copy(postingLocation = false))
             if (success) {
                 showSnackbar("Location successfully updated.")
-                Log.d("TAG", "location update successful")
             } else {
                 showSnackbar("Unable to update location.")
             }
