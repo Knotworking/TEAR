@@ -1,4 +1,4 @@
-package com.knotworking.tear.example
+package com.knotworking.tear
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

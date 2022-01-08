@@ -96,6 +96,7 @@ dependencies {
 }
 
 // comment this out to run tests locally
+// TODO find solution
 afterEvaluate {
     rootProject.getSubprojects().findAll {
         it.name.contains('domain')
