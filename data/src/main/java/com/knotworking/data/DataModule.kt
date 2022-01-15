@@ -98,7 +98,7 @@ val routeDataModule = module {
         LocalRouteDataSource(
             database = get(),
             distanceCalculator = get(),
-            totalKm = 6253
+            totalKm = 6271
         )
     }
 }
