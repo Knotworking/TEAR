@@ -2,11 +2,11 @@
 buildscript {
     ext {
         compose_version = '1.0.5'
+        kotlin_version = "1.5.31"
     }
-    ext.kotlin_version = "1.5.21"
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.2.2"
@@ -20,7 +20,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter() // Warning: this repository is going to shut down soon
+        mavenCentral()
     }
 }
 

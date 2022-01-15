@@ -6,10 +6,17 @@ ext {
     def gsonConverterVersion = "2.1.0"
     def coroutinesVersion = "1.6.0"
     def lifecycleExtensionsVersion = "2.1.0"
+    def androidxCoreKtxVersion = "1.7.0"
+    def androidxAppCompatVersion = "1.4.1"
+    androidxLifecycleKtxVersion = "2.4.0"
+    roomVersion = "2.4.1"
 
     // testing
     def mockkVersion = '1.12.0'
+    def jUnitVersion = "4.13.2"
 
+    androidxCoreKtx = "androidx.core:core-ktx:$androidxCoreKtxVersion"
+    androidxAppCompat = "androidx.appcompat:appcompat:$androidxAppCompatVersion"
 
     retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
     gson = "com.google.code.gson:gson:$gsonVersion"
@@ -31,4 +38,5 @@ ext {
     mockK = "io.mockk:mockk:$mockkVersion"
     kotlinCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     turbine = 'app.cash.turbine:turbine:0.6.0'
+    junit = "junit:junit:$jUnitVersion"
 }
